@@ -4,38 +4,42 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>ilovegkd</title>
-  <style>
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,Noto Sans KR,sans-serif;max-width:860px;margin:40px auto;padding:0 16px;line-height:1.6}
-    header{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:24px}
-    nav a{margin-right:10px;text-decoration:none}
-    .meta{color:#666;font-size:14px}
-    ul{padding-left:18px}
-  </style>
+  <meta name="description" content="AI 정보글을 기록하고 공유하는 공간" />
+  <link rel="stylesheet" href="/assets/site.css" />
 </head>
 <body>
-  <header>
-    <div>
-      <h1 style="margin:0">ilovegkd</h1>
-      <div class="meta">경제/투자/자동화 기록</div>
-    </div>
-    <nav>
-      <a href="/about.html">소개</a>
-      <a href="/privacy.html">개인정보처리방침</a>
-      <a href="/terms.html">이용약관</a>
-      <a href="/contact.html">문의</a>
-    </nav>
-  </header>
+  <div class="container">
+    <header class="header">
+      <div class="brand">
+        <h1>ilovegkd</h1>
+        <p>AI 정보글 기록</p>
+      </div>
+      <nav class="nav">
+        <a href="/about.html">소개</a>
+        <a href="/privacy.html">개인정보처리방침</a>
+        <a href="/terms.html">이용약관</a>
+        <a href="/contact.html">문의</a>
+      </nav>
+    </header>
 
-  <main>
-    <h2>최신 글</h2>
-    <ul>
-      <!-- POSTS:START -->
-      <!-- POSTS:END -->
-    </ul>
-  </main>
+    <section class="hero">
+      <div class="card">
+        <div class="h2">최신 글</div>
+        <div class="meta">자동으로 생성·업로드된 글 링크가 이곳에 쌓입니다.</div>
+        <hr />
+        <ul class="list">
+          <!-- POSTS:START -->
+          <!-- POSTS:END -->
+        </ul>
+        <div class="small" style="margin-top:12px">
+          글이 안 보이면 주소 끝에 <span class="code">?v=숫자</span> 를 붙여 새로고침(캐시 무력화) 해보세요.
+        </div>
+      </div>
+    </section>
 
-  <footer class="meta" style="margin-top:40px">
-    © ilovegkd.github.io
-  </footer>
+    <footer class="footer">
+      © ilovegkd.github.io
+    </footer>
+  </div>
 </body>
 </html>
