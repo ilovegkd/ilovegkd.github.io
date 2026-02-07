@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+    <rect width="100%" height="100%" fill="#ffffff"/> <text x="60" y="80" font-size="44" fill="#111827" font-family="sans-serif" font-weight="bold">무료 AI 모델 성능 비교 (벤치마크 점수)</text>
+    <text x="60" y="120" font-size="20" fill="#64748b" font-family="sans-serif">UNIT: 벤치마크 점수 (단위: 점)</text>
+    <line x1="60" y1="140" x2="1140" y2="140" stroke="#e5e7eb" stroke-width="2"/>
+    <line x1="300" y1="160" x2="300" y2="630" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="4"/><text x="300" y="150" font-size="16" fill="#64748b" text-anchor="middle" font-family="monospace">0</text><line x1="458" y1="160" x2="458" y2="630" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="4"/><text x="458" y="150" font-size="16" fill="#64748b" text-anchor="middle" font-family="monospace">18</text><line x1="616" y1="160" x2="616" y2="630" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="4"/><text x="616" y="150" font-size="16" fill="#64748b" text-anchor="middle" font-family="monospace">36</text><line x1="774" y1="160" x2="774" y2="630" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="4"/><text x="774" y="150" font-size="16" fill="#64748b" text-anchor="middle" font-family="monospace">55</text><line x1="932" y1="160" x2="932" y2="630" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="4"/><text x="932" y="150" font-size="16" fill="#64748b" text-anchor="middle" font-family="monospace">73</text><line x1="1090" y1="160" x2="1090" y2="630" stroke="#e5e7eb" stroke-width="1" stroke-dasharray="4"/><text x="1090" y="150" font-size="16" fill="#64748b" text-anchor="middle" font-family="monospace">91</text><text x="280" y="212" font-size="24" fill="#334155" text-anchor="end" font-family="sans-serif" font-weight="bold">모델 A (오픈소스)</text>
+      <rect x="300" y="180" width="790" height="50" fill="#f1f5f9" rx="4"/>
+      <rect x="300" y="180" width="677.1428571428571" height="50" fill="#3b82f6" rx="4"/>
+      <text x="992.1428571428571" y="212" font-size="24" fill="#3b82f6" font-family="monospace" font-weight="bold">78</text><text x="280" y="302" font-size="24" fill="#334155" text-anchor="end" font-family="sans-serif" font-weight="bold">모델 B (무료 API)</text>
+      <rect x="300" y="270" width="790" height="50" fill="#f1f5f9" rx="4"/>
+      <rect x="300" y="270" width="564.2857142857143" height="50" fill="#10b981" rx="4"/>
+      <text x="879.2857142857143" y="302" font-size="24" fill="#10b981" font-family="monospace" font-weight="bold">65</text><text x="280" y="392" font-size="24" fill="#334155" text-anchor="end" font-family="sans-serif" font-weight="bold">모델 C (클라우드 평가판)</text>
+      <rect x="300" y="360" width="790" height="50" fill="#f1f5f9" rx="4"/>
+      <rect x="300" y="360" width="711.8681318681319" height="50" fill="#f59e0b" rx="4"/>
+      <text x="1026.868131868132" y="392" font-size="24" fill="#f59e0b" font-family="monospace" font-weight="bold">82</text>
+    <text x="1140" y="600" font-size="16" fill="#94a3b8" text-anchor="end">AI Analysis Data</text>
+  </svg>
