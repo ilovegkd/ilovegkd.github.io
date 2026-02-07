@@ -1,165 +1,137 @@
-:root{
-  --bg:#0b0c10;
-  --card:#11131a;
-  --text:#e8eaf0;
-  --muted:#a7adbb;
-  --line:rgba(255,255,255,.10);
-  --accent:#7c5cff;
-  --max:920px;
-  --radius:16px;
+/* =========================================================
+   RESET (최소한만 사용)
+========================================================= */
+* {
+  box-sizing: border-box;
 }
 
-*{box-sizing:border-box}
-html,body{margin:0;padding:0}
-body{
-  font-family: system-ui,-apple-system,Segoe UI,Roboto,Apple SD Gothic Neo,Noto Sans KR,sans-serif;
-  background: radial-gradient(1200px 800px at 20% -10%, rgba(124,92,255,.18), transparent 60%),
-              radial-gradient(900px 700px at 90% 0%, rgba(54,180,255,.14), transparent 55%),
-              var(--bg);
-  color:var(--text);
-  line-height:1.7;
+html, body {
+  margin: 0;
+  padding: 0;
 }
 
-a{color:inherit;text-decoration:none}
-a:hover{text-decoration:underline}
-.container{max-width:var(--max);margin:0 auto;padding:28px 16px 60px}
-.header{
-  display:flex;gap:16px;align-items:flex-end;justify-content:space-between;
-  border:1px solid var(--line);background:rgba(17,19,26,.75);
-  backdrop-filter: blur(10px);
-  padding:18px 18px;border-radius:var(--radius);
-}
-.brand h1{margin:0;font-size:24px;letter-spacing:-.3px}
-.brand p{margin:6px 0 0;color:var(--muted);font-size:14px}
-.nav{display:flex;flex-wrap:wrap;gap:10px}
-.nav a{
-  padding:8px 10px;border:1px solid var(--line);
-  border-radius:999px;background:rgba(255,255,255,.02);
-  font-size:13px;color:var(--muted);
-}
-.nav a:hover{color:var(--text);text-decoration:none;border-color:rgba(124,92,255,.35)}
+/* =========================================================
+   BODY 기본값
+   ⚠ 본문 내용은 HTML 그대로 유지됨
+========================================================= */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+               Roboto, "Apple SD Gothic Neo", "Noto Sans KR",
+               Arial, sans-serif;
+  background: #000;
+  color: #eaeaea;
+  line-height: 1.6;
 
-.hero{margin-top:18px}
-.card{
-  border:1px solid var(--line);background:rgba(17,19,26,.65);
-  backdrop-filter: blur(10px);
-  border-radius:var(--radius);padding:18px;
-}
-.h2{margin:0 0 10px;font-size:18px}
-.meta{color:var(--muted);font-size:13px}
-
-.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
-.list li{
-  border:1px solid var(--line);border-radius:14px;
-  background:rgba(255,255,255,.02);
-  padding:12px 12px;
-  display:flex;justify-content:space-between;gap:12px;align-items:center;
-}
-.list li a{font-weight:600}
-.badge{
-  border:1px solid var(--line);
-  border-radius:999px;padding:6px 10px;
-  color:var(--muted);font-size:12px;white-space:nowrap;
+  /* 고정 헤더 높이만큼 여백 */
+  padding-top: 64px;
 }
 
-.footer{margin-top:18px;color:var(--muted);font-size:13px}
-hr{border:0;border-top:1px solid var(--line);margin:14px 0}
-.page-title{margin:0 0 6px;font-size:22px;letter-spacing:-.2px}
-.small{color:var(--muted);font-size:13px}
-.code{
-  font-family: ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
-  background:rgba(255,255,255,.04);
-  border:1px solid var(--line);
-  padding:10px;border-radius:12px;
-  overflow:auto;
+/* =========================================================
+   HEADER / TOPBAR
+========================================================= */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  background: #000;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
 }
 
-/* ===== AI Now Insite: fixed topbar + unified nav ===== */
-.topbar{
-  position:fixed;
-  top:0; left:0; right:0;
-  z-index:1000;
-  background:rgba(255,255,255,.92);
-  backdrop-filter:saturate(180%) blur(10px);
-  border-bottom:1px solid rgba(0,0,0,.08);
-}
-.topbar-inner{
-  max-width:980px;
-  margin:0 auto;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:16px;
-  padding:14px 18px;
-}
-.topbar-logo{
-  font-weight:800;
-  letter-spacing:.2px;
-  text-decoration:none;
-  color:inherit;
-}
-.topbar-nav{
-  display:flex;
-  flex-wrap:wrap;
-  gap:14px;
-}
-.topbar-nav a{
-  text-decoration:none;
-  color:inherit;
-  opacity:.9;
-}
-.topbar-nav a:hover{
-  opacity:1;
-  text-decoration:underline;
+.header .topbar {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
 }
 
-/* Make room for fixed topbar */
-body{ padding-top:62px; }
-
-/* Hide legacy header nav so top menu is consistent on every page */
-.header .nav{ display:none !important; }
-
-@media (max-width:520px){
-  .topbar-inner{ padding:12px 14px; }
-  .topbar-nav{ gap:10px; }
+/* =========================================================
+   LOGO
+========================================================= */
+.header .brand {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-decoration: none;
+  white-space: nowrap;
 }
 
-/* ===== Home post list cards ===== */
-.post-item{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:10px 0;
-  border-bottom:1px solid rgba(0,0,0,.06);
-}
-.post-thumb{
-  width:72px;
-  height:72px;
-  object-fit:cover;
-  border-radius:10px;
-  flex:0 0 auto;
-}
-.post-text{ min-width:0; }
-.post-link{
-  font-weight:700;
-  text-decoration:none;
-  color:inherit;
-  display:inline-block;
-  max-width:100%;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.post-link:hover{ text-decoration:underline; }
-/* nav가 숨겨지는 문제 방지 */
+/* =========================================================
+   NAV (강제 표시 – 충돌 차단)
+========================================================= */
 .header .nav,
-.nav {
+.header nav,
+.header .nav ul {
   display: flex !important;
-  gap: 12px;
-  flex-wrap: wrap;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.header .nav {
+  position: relative;
+  z-index: 10000;
+}
+
+.header .nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 14px;
   align-items: center;
 }
+
+/* =========================================================
+   NAV LINKS
+========================================================= */
 .header .nav a {
+  color: rgba(255,255,255,0.92);
   text-decoration: none;
+  font-size: 14px;
+  padding: 8px 10px;
+  border-radius: 8px;
 }
 
+.header .nav a:hover {
+  background: rgba(255,255,255,0.12);
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+@media (max-width: 768px) {
+
+  body {
+    padding-top: 72px;
+  }
+
+  .header .topbar {
+    padding: 12px 14px;
+  }
+
+  .header .nav ul {
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .header .nav a {
+    font-size: 13px;
+    padding: 7px 9px;
+  }
+}
+
+/* =========================================================
+   SAFETY NET
+   height:0 / overflow:hidden / display:none 방지
+========================================================= */
+.header,
+.header .topbar,
+.header .nav {
+  height: auto !important;
+  overflow: visible !important;
+}
