@@ -73,3 +73,81 @@ hr{border:0;border-top:1px solid var(--line);margin:14px 0}
   padding:10px;border-radius:12px;
   overflow:auto;
 }
+
+/* ===== AI Now Insite: fixed topbar + unified nav ===== */
+.topbar{
+  position:fixed;
+  top:0; left:0; right:0;
+  z-index:1000;
+  background:rgba(255,255,255,.92);
+  backdrop-filter:saturate(180%) blur(10px);
+  border-bottom:1px solid rgba(0,0,0,.08);
+}
+.topbar-inner{
+  max-width:980px;
+  margin:0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:14px 18px;
+}
+.topbar-logo{
+  font-weight:800;
+  letter-spacing:.2px;
+  text-decoration:none;
+  color:inherit;
+}
+.topbar-nav{
+  display:flex;
+  flex-wrap:wrap;
+  gap:14px;
+}
+.topbar-nav a{
+  text-decoration:none;
+  color:inherit;
+  opacity:.9;
+}
+.topbar-nav a:hover{
+  opacity:1;
+  text-decoration:underline;
+}
+
+/* Make room for fixed topbar */
+body{ padding-top:62px; }
+
+/* Hide legacy header nav so top menu is consistent on every page */
+.header .nav{ display:none !important; }
+
+@media (max-width:520px){
+  .topbar-inner{ padding:12px 14px; }
+  .topbar-nav{ gap:10px; }
+}
+
+/* ===== Home post list cards ===== */
+.post-item{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 0;
+  border-bottom:1px solid rgba(0,0,0,.06);
+}
+.post-thumb{
+  width:72px;
+  height:72px;
+  object-fit:cover;
+  border-radius:10px;
+  flex:0 0 auto;
+}
+.post-text{ min-width:0; }
+.post-link{
+  font-weight:700;
+  text-decoration:none;
+  color:inherit;
+  display:inline-block;
+  max-width:100%;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.post-link:hover{ text-decoration:underline; }
