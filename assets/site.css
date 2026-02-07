@@ -1,5 +1,5 @@
 /* =========================================================
-   AI Now Insite - site.css (FULL REPLACE)
+   AI Now Insite - site.css (FULL REPLACE / WHITE THEME)
    목적: 상단 고정 로고 + 메뉴, PC/모바일 안정화
 ========================================================= */
 
@@ -11,16 +11,16 @@ a { color: inherit; }
 
 /* Layout */
 :root{
-  --bg: #000;
-  --fg: #eaeaea;
-  --muted: rgba(255,255,255,0.72);
-  --line: rgba(255,255,255,0.12);
-  --card: rgba(255,255,255,0.06);
-  --card2: rgba(255,255,255,0.08);
+  --bg: #ffffff;          /* ✅ 전체 배경 흰색 */
+  --fg: #111111;          /* 기본 글자색 */
+  --muted: rgba(17,17,17,0.72);
+  --line: rgba(17,17,17,0.12);
+  --card: rgba(0,0,0,0.03);
+  --card2: rgba(0,0,0,0.045);
   --radius: 14px;
   --max: 1100px;
 
-  --header-h: 64px; /* 기본 헤더 높이 */
+  --header-h: 64px;       /* 기본 헤더 높이 */
 }
 
 body{
@@ -71,7 +71,7 @@ body{
   font-weight: 800;
   letter-spacing: 0.4px;
   white-space: nowrap;
-  color: #fff;
+  color: #111111;
 }
 
 /* Nav - 강제 표시(기존 display:none 충돌 방지) */
@@ -87,7 +87,7 @@ body{
 
 .nav a{
   text-decoration: none;
-  color: rgba(255,255,255,0.92);
+  color: rgba(17,17,17,0.92);
   font-size: 14px;
   padding: 8px 10px;
   border-radius: 10px;
@@ -95,8 +95,8 @@ body{
 }
 
 .nav a:hover{
-  background: rgba(255,255,255,0.10);
-  border-color: rgba(255,255,255,0.10);
+  background: rgba(0,0,0,0.06);
+  border-color: rgba(0,0,0,0.08);
 }
 
 /* =========================================================
@@ -174,7 +174,7 @@ hr{
   gap: 12px;
   align-items: flex-start;
   padding: 10px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
 }
 
 .post-item:last-child{ border-bottom: none; }
@@ -184,8 +184,8 @@ hr{
   height: 86px;
   border-radius: 12px;
   object-fit: cover;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.10);
+  background: rgba(0,0,0,0.03);
+  border: 1px solid rgba(0,0,0,0.10);
   flex: 0 0 auto;
 }
 
@@ -196,7 +196,7 @@ hr{
 
 .post-link{
   display: inline-block;
-  color: #fff;
+  color: #111111;
   text-decoration: none;
   font-weight: 700;
   line-height: 1.35;
@@ -209,9 +209,22 @@ hr{
 /* Footer */
 .footer{
   padding: 18px 0 28px;
-  color: rgba(255,255,255,0.72);
+  color: rgba(17,17,17,0.72);
   font-size: 13px;
   text-align: center;
+}
+
+/* =========================================================
+   Links inside content
+========================================================= */
+.card a{
+  color: #0b57d0; /* 읽기 좋은 링크 컬러 */
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.card a:hover{
+  opacity: 0.85;
 }
 
 /* =========================================================
