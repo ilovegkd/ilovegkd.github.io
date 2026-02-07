@@ -52,16 +52,19 @@
   </div>
 
   <script>
-  (function(){
-    var list = document.querySelector('ul.list');
-    if(!list) return;
-    var hasItems = Array.from(list.children).some(function(el){ return el.tagName === 'LI'; });
-    if(hasItems) return;
+(function(){
+  var list = document.querySelector('ul.list');
+  if(!list) return;
+  var hasItems = Array.from(list.children).some(function(el){ return el.tagName === 'LI'; });
+  if(hasItems) return;
 
-    var host = location.hostname || '';
-    var owner = (host.endsWith('.github.io') ? host.split('.')[0] : 'ilovegkd');
-    var repo = owner + '.github.io';
-    var branches = ['main','master'];
+  var host = location.hostname || '';
+  var owner = (host.endsWith('.github.io') ? host.split('.')[0] : 'ilovegkd'); // 그대로 둠
+  var repo = owner + '.github.io';
+
+  var SITE_NAME = 'AI Now Insight';   // ★ 추가
+
+  var branches = ['main','master'];
 
     function escapeHtml(s){
       return String(s).replace(/[&<>"']/g, function(c){
