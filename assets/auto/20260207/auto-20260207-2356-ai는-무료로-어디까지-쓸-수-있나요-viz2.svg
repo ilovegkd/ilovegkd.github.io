@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+    <rect width="100%" height="100%" fill="#ffffff"/> <text x="60" y="90" font-size="44" fill="#111827" font-family="sans-serif" font-weight="bold">무료 AI 핵심 요약 (Key Metrics)</text>
+    <line x1="60" y1="120" x2="1140" y2="120" stroke="#e2e8f0" stroke-width="2"/>
+    <g>
+      <rect x="60" y="160" width="525" height="180" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" rx="12"/>
+      <text x="90" y="210" font-size="22" fill="#64748b" font-family="sans-serif" font-weight="bold">정확도</text>
+      <text x="90" y="270" font-size="56" fill="#111827" font-family="sans-serif" font-weight="bold" letter-spacing="-1px">85%</text>
+      <text x="90" y="310" font-size="18" fill="#10b981" font-family="sans-serif">▲ 사전 학습 모델 정확도</text>
+      <rect x="60" y="200" width="4" height="100" fill="#3b82f6"/>
+    </g><g>
+      <rect x="615" y="160" width="525" height="180" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" rx="12"/>
+      <text x="645" y="210" font-size="22" fill="#64748b" font-family="sans-serif" font-weight="bold">API 호출 제한</text>
+      <text x="645" y="270" font-size="56" fill="#111827" font-family="sans-serif" font-weight="bold" letter-spacing="-1px">5000</text>
+      <text x="645" y="310" font-size="18" fill="#10b981" font-family="sans-serif">▲ 월별 무료 API 호출 횟수</text>
+      <rect x="615" y="200" width="4" height="100" fill="#3b82f6"/>
+    </g><g>
+      <rect x="60" y="370" width="525" height="180" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" rx="12"/>
+      <text x="90" y="420" font-size="22" fill="#64748b" font-family="sans-serif" font-weight="bold">GPU 메모리</text>
+      <text x="90" y="480" font-size="56" fill="#111827" font-family="sans-serif" font-weight="bold" letter-spacing="-1px">16GB</text>
+      <text x="90" y="520" font-size="18" fill="#10b981" font-family="sans-serif">▲ 무료 GPU 리소스 제한</text>
+      <rect x="60" y="410" width="4" height="100" fill="#3b82f6"/>
+    </g><g>
+      <rect x="615" y="370" width="525" height="180" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" rx="12"/>
+      <text x="645" y="420" font-size="22" fill="#64748b" font-family="sans-serif" font-weight="bold">데이터 저장 용량</text>
+      <text x="645" y="480" font-size="56" fill="#111827" font-family="sans-serif" font-weight="bold" letter-spacing="-1px">10GB</text>
+      <text x="645" y="520" font-size="18" fill="#10b981" font-family="sans-serif">▲ 무료 데이터 저장 공간</text>
+      <rect x="615" y="410" width="4" height="100" fill="#3b82f6"/>
+    </g>
+    <text x="1140" y="600" font-size="16" fill="#94a3b8" text-anchor="end">Key Performance Indicators</text>
+  </svg>
