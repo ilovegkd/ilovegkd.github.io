@@ -151,3 +151,15 @@ body{ padding-top:62px; }
   text-overflow:ellipsis;
 }
 .post-link:hover{ text-decoration:underline; }
+/* nav가 숨겨지는 문제 방지 */
+.header .nav,
+.nav {
+  display: flex !important;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.header .nav a {
+  text-decoration: none;
+}
+
