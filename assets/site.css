@@ -90,7 +90,7 @@ body {
 }
 
 /* 5. 본문 스타일 */
-.hero { padding: 40px 0 40px; }
+.hero { padding-top: 40px; }
 
 .card {
   background: var(--card-bg);
@@ -184,4 +184,5 @@ p { margin-bottom: 16px; word-break: keep-all; }
   .card { padding: 20px 15px; }
   .post-thumb { display: none; }
 }
+
 
