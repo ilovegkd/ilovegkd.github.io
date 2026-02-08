@@ -1,1 +1,46 @@
-test
+---
+layout: null
+---
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{{ page.title | escape }}</title>
+  <link rel="stylesheet" href="/assets/site.css?v=2" />
+</head>
+<body>
+  <div class="container">
+
+    <!-- ✅ index.html과 동일한 상단 로고 + 메뉴 -->
+    <header class="header">
+      <div class="topbar">
+        <a class="logo" href="/">AI Now Insite</a>
+        <nav class="nav">
+          <a href="/about.html">소개</a>
+          <a href="/privacy.html">개인정보처리방침</a>
+          <a href="/terms.html">이용약관</a>
+          <a href="/contact.html">문의</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="card" style="margin-top:16px;">
+      <h1 class="site-title" style="margin-top:0;">{{ page.title }}</h1>
+
+      {% if page.image %}
+        <img src="{{ page.image | relative_url }}" style="width:100%;border-radius:10px;margin-bottom:20px;">
+      {% endif %}
+
+      <div class="post-content">
+        {{ content }}
+      </div>
+    </main>
+
+    <footer class="footer">
+      © AI Now Insite · <span class="meta">ainowinsight.com</span>
+    </footer>
+
+  </div>
+</body>
+</html>
