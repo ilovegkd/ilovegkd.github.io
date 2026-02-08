@@ -36,9 +36,18 @@
         </div>
         <hr />
         <ul class="list">
-          <!-- POSTS:START -->
-          <!-- POSTS:END -->
-        </ul>
+          {% for post in site.posts %}
+            <li class="post-item">
+              {% if post.image %}
+                <img src="{{ post.image }}" alt="" loading="lazy" class="post-thumb" />
+              {% endif %}
+              <div class="post-text">
+                <a class="post-link" href="{{ post.url }}">{{ post.title }}</a>
+                <div class="small meta">{{ post.date | date: "%Y-%m-%d" }}</div>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
 
         <div class="small" style="margin-top:12px">
           최신 글이 바로 안 보이면 주소 끝에 <span class="code">?v=숫자</span>를 붙여 새로고침 해보세요.
