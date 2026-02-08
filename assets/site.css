@@ -1,6 +1,6 @@
 /* =========================================================
-   AI Now Insite - site.css (Revised for Mobile Layout)
-   목적: 상단 메뉴 모바일 최적화 (2단 분리), 전체 스타일 안정화
+   AI Now Insite - site.css (Final Fix for Mobile Header)
+   목적: 모바일 헤더 높이 축소 및 본문 가림 현상 해결
 ========================================================= */
 
 /* Reset */
@@ -15,19 +15,21 @@ a { color: inherit; text-decoration: none; }
   --fg: #111111;
   --muted: rgba(17,17,17,0.72);
   --line: rgba(17,17,17,0.12);
-  --card: #ffffff;  /* 카드 배경을 완전 흰색으로 변경 (가독성 UP) */
+  --card: #ffffff;
   --card-border: #e0e0e0;
   --radius: 12px;
-  --max-width: 900px; /* 읽기 편한 최대 폭 */
-  --header-h: 60px;   /* PC 헤더 높이 */
+  --max-width: 900px;
+  --header-h: 60px;   /* PC 기준 헤더 높이 */
 }
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background: #f9f9f9; /* 배경을 살짝 회색으로 (카드와 구분) */
+  background: #f9f9f9;
   color: var(--fg);
   line-height: 1.6;
-  padding-top: var(--header-h); /* 헤더 높이만큼 여백 확보 */
+  
+  /* ✅ [PC 기본] 헤더 높이만큼 여백 확보 */
+  padding-top: calc(var(--header-h) + 20px); 
 }
 
 /* Container */
@@ -38,16 +40,15 @@ body {
 }
 
 /* =========================================================
-   Fixed Header (Topbar)
+   Fixed Header
 ========================================================= */
 .header {
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 9999;
-  background: rgba(255, 255, 255, 0.95); /* 살짝 투명 */
-  backdrop-filter: blur(10px); /* 블러 효과 */
+  background: rgba(255, 255, 255, 0.98); /* 거의 불투명하게 */
   border-bottom: 1px solid var(--line);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.03);
 }
 
 .header .topbar {
@@ -68,7 +69,7 @@ body {
   white-space: nowrap;
 }
 
-/* Navigation (PC Default) */
+/* Navigation (PC) */
 .nav {
   display: flex;
   gap: 15px;
@@ -92,9 +93,7 @@ body {
 /* =========================================================
    Content Styles
 ========================================================= */
-.hero {
-  padding: 30px 0;
-}
+.hero { padding: 10px 0 40px; } /* 상단 여백 최소화 */
 
 .card {
   background: var(--card);
@@ -131,12 +130,10 @@ hr {
   color: #222;
 }
 
-p {
-  margin-bottom: 16px;
-  word-break: keep-all; /* 한글 줄바꿈 예쁘게 */
-}
+p { margin-bottom: 16px; word-break: keep-all; }
 
-/* Code Block */
+.small, .meta { font-size: 13px; color: #888; }
+
 .code {
   background: #f4f6f8;
   padding: 15px;
@@ -147,24 +144,14 @@ p {
   overflow-x: auto;
 }
 
-.small, .meta {
-  font-size: 13px;
-  color: #888;
-}
-
-/* Post List (Index Page) */
-.list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
+/* List Styles */
+.list { list-style: none; padding: 0; margin: 0; }
 
 .post-item {
   display: flex;
   padding: 20px 0;
   border-bottom: 1px solid #eee;
 }
-
 .post-item:last-child { border-bottom: none; }
 
 .post-thumb {
@@ -174,11 +161,10 @@ p {
   object-fit: cover;
   margin-right: 20px;
   background: #eee;
+  flex-shrink: 0;
 }
 
-.post-text {
-  flex: 1;
-}
+.post-text { flex: 1; min-width: 0; }
 
 .post-link {
   font-size: 18px;
@@ -189,12 +175,8 @@ p {
   line-height: 1.4;
 }
 
-.post-link:hover {
-  color: #3b82f6;
-  text-decoration: none;
-}
+.post-link:hover { color: #3b82f6; }
 
-/* Footer */
 .footer {
   text-align: center;
   padding: 40px 0;
@@ -203,49 +185,49 @@ p {
 }
 
 /* =========================================================
-   🔥 Mobile Optimization (핵심 수정 부분)
+   🔥 Mobile Fix (여기가 핵심 수정됨)
 ========================================================= */
 @media (max-width: 600px) {
   
-  /* 헤더 높이를 자동으로 늘림 (2줄 허용) */
-  :root { --header-h: auto; }
-  
+  /* 1. 본문을 헤더 높이보다 더 아래로 밀어버림 (겹침 해결) */
   body {
-    padding-top: 110px; /* 헤더가 2줄이 되므로 본문 여백 늘림 */
+    padding-top: 130px !important; 
   }
 
+  /* 2. 헤더 높이를 내용물에 맞게 자동 조절 */
   .header .topbar {
-    flex-direction: column; /* 세로 배치 */
+    flex-direction: column;
     height: auto;
-    padding: 15px 20px;
-    gap: 12px;
+    padding: 10px 20px; /* 위아래 여백을 줄임 (헤더 다이어트) */
+    gap: 8px; /* 로고와 메뉴 사이 간격 좁힘 */
   }
 
+  /* 3. 로고 크기 살짝 축소 */
+  .logo {
+    font-size: 18px;
+    margin-bottom: 0;
+  }
+
+  /* 4. 메뉴 버튼 크기와 간격 최적화 */
   .nav {
     width: 100%;
-    justify-content: center; /* 메뉴 가운데 정렬 */
-    gap: 5px; /* 메뉴 간격 좁힘 */
-    flex-wrap: wrap; /* 좁으면 줄바꿈 허용 */
+    justify-content: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 5px;
   }
 
   .nav a {
-    font-size: 14px;
-    padding: 6px 10px;
-    background: #f5f5f5; /* 버튼처럼 보이게 배경 추가 */
-    border-radius: 20px;
+    font-size: 13px; /* 글자 크기 약간 줄임 */
+    padding: 5px 12px;
+    background: #f1f3f5;
+    border-radius: 15px;
   }
 
-  /* 본문 카드 여백 조정 */
-  .card {
-    padding: 20px;
-  }
+  /* 5. 모바일 카드 여백 및 썸네일 숨김 */
+  .card { padding: 20px; }
+  .post-thumb { display: none; }
+  .post-link { font-size: 16px; }
   
-  /* 리스트 이미지 숨김 (모바일에서는 제목만 깔끔하게) */
-  .post-thumb {
-    display: none;
-  }
-
-  .post-link {
-    font-size: 16px;
-  }
+  .container { padding: 0 15px; }
 }
