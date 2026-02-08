@@ -1,264 +1,251 @@
 /* =========================================================
-   AI Now Insite - site.css (FULL REPLACE / WHITE THEME)
-   목적: 상단 고정 로고 + 메뉴, PC/모바일 안정화
+   AI Now Insite - site.css (Revised for Mobile Layout)
+   목적: 상단 메뉴 모바일 최적화 (2단 분리), 전체 스타일 안정화
 ========================================================= */
 
 /* Reset */
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 img { max-width: 100%; height: auto; display: block; }
-a { color: inherit; }
+a { color: inherit; text-decoration: none; }
 
-/* Layout */
-:root{
-  --bg: #ffffff;          /* ✅ 전체 배경 흰색 */
-  --fg: #111111;          /* 기본 글자색 */
+/* Variables */
+:root {
+  --bg: #ffffff;
+  --fg: #111111;
   --muted: rgba(17,17,17,0.72);
   --line: rgba(17,17,17,0.12);
-  --card: rgba(0,0,0,0.03);
-  --card2: rgba(0,0,0,0.045);
-  --radius: 14px;
-  --max: 1100px;
-
-  --header-h: 64px;       /* 기본 헤더 높이 */
+  --card: #ffffff;  /* 카드 배경을 완전 흰색으로 변경 (가독성 UP) */
+  --card-border: #e0e0e0;
+  --radius: 12px;
+  --max-width: 900px; /* 읽기 편한 최대 폭 */
+  --header-h: 60px;   /* PC 헤더 높이 */
 }
 
-body{
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-               Roboto, "Apple SD Gothic Neo", "Noto Sans KR",
-               Arial, sans-serif;
-  background: var(--bg);
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: #f9f9f9; /* 배경을 살짝 회색으로 (카드와 구분) */
   color: var(--fg);
   line-height: 1.6;
-
-  /* ✅ 고정 헤더에 본문이 가리지 않도록 */
-  padding-top: var(--header-h);
+  padding-top: var(--header-h); /* 헤더 높이만큼 여백 확보 */
 }
 
 /* Container */
-.container{
-  max-width: var(--max);
+.container {
+  max-width: var(--max-width);
   margin: 0 auto;
-  padding: 0 18px;
+  padding: 0 20px;
 }
 
 /* =========================================================
    Fixed Header (Topbar)
 ========================================================= */
-.header{
+.header {
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 9999;
-  background: var(--bg);
+  background: rgba(255, 255, 255, 0.95); /* 살짝 투명 */
+  backdrop-filter: blur(10px); /* 블러 효과 */
   border-bottom: 1px solid var(--line);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.03);
 }
 
-/* header 내부 폭을 container와 동일하게 */
-.header .topbar{
-  max-width: var(--max);
+.header .topbar {
+  max-width: var(--max-width);
   margin: 0 auto;
-  padding: 14px 18px;
+  padding: 0 20px;
   height: var(--header-h);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
 }
 
 /* Logo */
-.logo{
-  text-decoration: none;
+.logo {
+  font-size: 20px;
   font-weight: 800;
-  letter-spacing: 0.4px;
+  color: #111;
   white-space: nowrap;
-  color: #111111;
 }
 
-/* Nav - 강제 표시(기존 display:none 충돌 방지) */
-.nav{
-  display: flex !important;
-  gap: 8px;
+/* Navigation (PC Default) */
+.nav {
+  display: flex;
+  gap: 15px;
   align-items: center;
-  justify-content: flex-end;
-  flex-wrap: wrap;
-  visibility: visible !important;
-  opacity: 1 !important;
 }
 
-.nav a{
-  text-decoration: none;
-  color: rgba(17,17,17,0.92);
-  font-size: 14px;
-  padding: 8px 10px;
-  border-radius: 10px;
-  border: 1px solid transparent;
+.nav a {
+  font-size: 15px;
+  color: #555;
+  font-weight: 500;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: all 0.2s;
 }
 
-.nav a:hover{
-  background: rgba(0,0,0,0.06);
-  border-color: rgba(0,0,0,0.08);
+.nav a:hover {
+  background: #f0f0f0;
+  color: #000;
 }
 
 /* =========================================================
-   Hero / Card / Typography (기존 클래스 유지)
+   Content Styles
 ========================================================= */
-.hero{
-  padding: 22px 0 26px;
+.hero {
+  padding: 30px 0;
 }
 
-.card{
+.card {
   background: var(--card);
-  border: 1px solid var(--line);
+  border: 1px solid var(--card-border);
   border-radius: var(--radius);
-  padding: 18px 18px;
+  padding: 30px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
-hr{
-  border: none;
-  border-top: 1px solid var(--line);
-  margin: 14px 0;
+hr {
+  border: 0;
+  border-top: 1px solid #eee;
+  margin: 24px 0;
 }
 
-.h2{
+.page-title, .site-title {
+  font-size: 24px;
+  font-weight: 800;
+  margin: 0 0 10px;
+  color: #111;
+}
+
+.site-subtitle {
+  color: #666;
+  margin: 0 0 20px;
   font-size: 16px;
-  font-weight: 800;
-  margin: 0 0 8px;
 }
 
-.page-title{
-  margin: 0;
+.h2 {
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 700;
+  margin-top: 30px;
+  margin-bottom: 15px;
+  color: #222;
 }
 
-.site-title{
-  margin: 0;
-  font-size: 22px;
-  font-weight: 900;
-  letter-spacing: 0.3px;
+p {
+  margin-bottom: 16px;
+  word-break: keep-all; /* 한글 줄바꿈 예쁘게 */
 }
 
-.site-subtitle{
-  margin: 6px 0 0;
-  color: var(--muted);
-}
-
-.small{
-  font-size: 12px;
-  color: var(--muted);
-}
-
-.meta{
-  color: var(--muted);
-  font-size: 13px;
-}
-
-.code{
-  background: var(--card2);
-  border: 1px solid var(--line);
-  padding: 10px 12px;
-  border-radius: 12px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+/* Code Block */
+.code {
+  background: #f4f6f8;
+  padding: 15px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #333;
+  border: 1px solid #e1e4e8;
   overflow-x: auto;
 }
 
-/* Posts list on home */
-.list{
+.small, .meta {
+  font-size: 13px;
+  color: #888;
+}
+
+/* Post List (Index Page) */
+.list {
   list-style: none;
   padding: 0;
   margin: 0;
 }
 
-.post-item{
+.post-item {
   display: flex;
-  gap: 12px;
-  align-items: flex-start;
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(0,0,0,0.06);
+  padding: 20px 0;
+  border-bottom: 1px solid #eee;
 }
 
-.post-item:last-child{ border-bottom: none; }
+.post-item:last-child { border-bottom: none; }
 
-.post-thumb{
-  width: 86px;
-  height: 86px;
-  border-radius: 12px;
+.post-thumb {
+  width: 100px;
+  height: 70px;
+  border-radius: 8px;
   object-fit: cover;
-  background: rgba(0,0,0,0.03);
-  border: 1px solid rgba(0,0,0,0.10);
-  flex: 0 0 auto;
+  margin-right: 20px;
+  background: #eee;
 }
 
-.post-text{
-  min-width: 0;
+.post-text {
   flex: 1;
 }
 
-.post-link{
-  display: inline-block;
-  color: #111111;
-  text-decoration: none;
+.post-link {
+  font-size: 18px;
   font-weight: 700;
-  line-height: 1.35;
+  color: #111;
+  display: block;
+  margin-bottom: 6px;
+  line-height: 1.4;
 }
 
-.post-link:hover{
-  text-decoration: underline;
+.post-link:hover {
+  color: #3b82f6;
+  text-decoration: none;
 }
 
 /* Footer */
-.footer{
-  padding: 18px 0 28px;
-  color: rgba(17,17,17,0.72);
-  font-size: 13px;
+.footer {
   text-align: center;
+  padding: 40px 0;
+  color: #aaa;
+  font-size: 13px;
 }
 
 /* =========================================================
-   Links inside content
+   🔥 Mobile Optimization (핵심 수정 부분)
 ========================================================= */
-.card a{
-  color: #0b57d0; /* 읽기 좋은 링크 컬러 */
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-.card a:hover{
-  opacity: 0.85;
-}
-
-/* =========================================================
-   Mobile
-========================================================= */
-@media (max-width: 768px){
-  :root{ --header-h: 72px; }
-
-  .container{ padding: 0 14px; }
-
-  .header .topbar{
-    padding: 12px 14px;
-    height: var(--header-h);
+@media (max-width: 600px) {
+  
+  /* 헤더 높이를 자동으로 늘림 (2줄 허용) */
+  :root { --header-h: auto; }
+  
+  body {
+    padding-top: 110px; /* 헤더가 2줄이 되므로 본문 여백 늘림 */
   }
 
-  .nav a{
-    font-size: 13px;
-    padding: 7px 9px;
+  .header .topbar {
+    flex-direction: column; /* 세로 배치 */
+    height: auto;
+    padding: 15px 20px;
+    gap: 12px;
   }
 
-  .card{
-    padding: 16px 14px;
+  .nav {
+    width: 100%;
+    justify-content: center; /* 메뉴 가운데 정렬 */
+    gap: 5px; /* 메뉴 간격 좁힘 */
+    flex-wrap: wrap; /* 좁으면 줄바꿈 허용 */
   }
 
-  .post-thumb{
-    width: 76px;
-    height: 76px;
+  .nav a {
+    font-size: 14px;
+    padding: 6px 10px;
+    background: #f5f5f5; /* 버튼처럼 보이게 배경 추가 */
+    border-radius: 20px;
   }
-}
 
-/* =========================================================
-   Safety Net: height/overflow/display 강제
-========================================================= */
-.header, .header .topbar, .nav{
-  height: auto !important;
-  overflow: visible !important;
+  /* 본문 카드 여백 조정 */
+  .card {
+    padding: 20px;
+  }
+  
+  /* 리스트 이미지 숨김 (모바일에서는 제목만 깔끔하게) */
+  .post-thumb {
+    display: none;
+  }
+
+  .post-link {
+    font-size: 16px;
+  }
 }
