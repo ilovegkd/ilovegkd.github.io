@@ -1,3 +1,6 @@
+---
+layout: null
+---
 <!doctype html>
 <html lang="ko">
 <head>
@@ -7,11 +10,31 @@
   <meta name="description" content="AI Now Insite는 현재의 AI 기술과 관련 흐름을 정리해 소개하는 정보형 웹사이트입니다." />
   <link rel="canonical" href="https://ainowinsight.com/" />
   <link rel="stylesheet" href="/assets/site.css" />
+  <style>
+    /* 혹시 site.css가 없을 때를 대비한 비상용 스타일 */
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background: #f9f9f9; }
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    .header { margin-bottom: 40px; text-align: center; }
+    .logo { font-size: 24px; font-weight: bold; text-decoration: none; color: #333; }
+    .nav { margin-top: 10px; }
+    .nav a { margin: 0 10px; text-decoration: none; color: #666; font-size: 14px; }
+    .card { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .site-title { font-size: 32px; margin-bottom: 10px; color: #111; }
+    .site-subtitle { color: #666; margin-bottom: 30px; }
+    .list { list-style: none; padding: 0; }
+    .post-item { display: flex; align-items: flex-start; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #eee; }
+    .post-thumb { width: 120px; height: 80px; object-fit: cover; border-radius: 8px; margin-right: 20px; background: #eee; }
+    .post-text { flex: 1; }
+    .post-link { font-size: 18px; font-weight: bold; text-decoration: none; color: #2c3e50; display: block; margin-bottom: 5px; }
+    .post-link:hover { color: #3b82f6; }
+    .meta { font-size: 13px; color: #999; }
+    .footer { text-align: center; margin-top: 50px; color: #aaa; font-size: 13px; }
+    @media (max-width: 600px) { .post-item { flex-direction: column; } .post-thumb { width: 100%; height: 160px; margin-bottom: 15px; } }
+  </style>
 </head>
 <body>
   <div class="container">
 
-    <!-- ✅ 고정 상단 로고 + 메뉴 -->
     <header class="header">
       <div class="topbar">
         <a class="logo" href="/">AI Now Insite</a>
@@ -26,136 +49,38 @@
 
     <section class="hero">
       <div class="card">
-        <!-- ✅ 기존 본문 텍스트 유지: (원래 header에 있던 제목/설명) -->
         <h1 class="site-title">AI Now Insite</h1>
         <p class="site-subtitle">현재의 AI 기술과 그 흐름을 정리해 살펴볼 수 있는 공간입니다.</p>
 
-        <div class="h2" style="margin-top:14px;">최신 글</div>
-        <div class="meta">
-         글은 정보형 콘텐츠로 작성되며, 필요에 따라 내용이 보완될 수 있습니다.
+        <div class="h2" style="font-size: 20px; font-weight: bold; margin-top: 30px; margin-bottom: 15px;">최신 글</div>
+        <div class="meta" style="margin-bottom: 20px;">
+          글은 정보형 콘텐츠로 작성되며, 필요에 따라 내용이 보완될 수 있습니다.
         </div>
-        <hr />
-        <ul class="list">
-          <!-- POSTS:START -->
-          <!-- POSTS:END -->
-        </ul>
+        <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 30px;" />
 
-        <div class="small" style="margin-top:12px">
-          최신 글이 바로 안 보이면 주소 끝에 <span class="code">?v=숫자</span>를 붙여 새로고침 해보세요.
+        <ul class="list">
+          {% for post in site.posts %}
+            <li class="post-item">
+              {% if post.image %}
+                <img src="{{ post.image }}" alt="" loading="lazy" class="post-thumb" />
+              {% endif %}
+              <div class="post-text">
+                <a class="post-link" href="{{ post.url }}">{{ post.title }}</a>
+                <div class="meta">{{ post.date | date: "%Y-%m-%d" }}</div>
+                <p style="font-size: 14px; color: #666; margin-top: 5px; margin-bottom: 0;">
+                  {{ post.description | strip_html | truncate: 80 }}
+                </p>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
         </div>
-      </div>
     </section>
 
     <footer class="footer">
       © AI Now Insite · <span class="meta">ainowinsight.com</span>
     </footer>
   </div>
-
-  <script>
-(function(){
-  var list = document.querySelector('ul.list');
-  if(!list) return;
-  var hasItems = Array.from(list.children).some(function(el){ return el.tagName === 'LI'; });
-  if(hasItems) return;
-
-  var host = location.hostname || '';
-  var owner = (host.endsWith('.github.io') ? host.split('.')[0] : 'ilovegkd'); // 그대로 둠
-  var repo = owner + '.github.io';
-
-  var SITE_NAME = 'AI Now Insight';   // ★ 추가
-
-  var branches = ['main','master'];
-
-    function escapeHtml(s){
-      return String(s).replace(/[&<>"']/g, function(c){
-        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
-      });
-    }
-    function pickTitle(md, fallback){
-      var m = md.match(/^\s*#\s+(.+)\s*$/m);
-      return (m && m[1]) ? m[1].trim() : fallback;
-    }
-    function pickImage(md){
-      var m = md.match(/!\[[^\]]*\]\(([^)]+)\)/);
-      return (m && m[1]) ? m[1].trim().replace(/^[\"']|[\"']$/g,'') : '';
-    }
-
-    function listMdFiles(branch){
-      var api = 'https://api.github.com/repos/' + owner + '/' + repo + '/contents?ref=' + branch;
-      return fetch(api, {cache:'no-store'}).then(function(res){
-        if(!res.ok) throw new Error('HTTP ' + res.status);
-        return res.json();
-      }).then(function(items){
-        var md = (items || []).filter(function(it){
-          return it && it.type === 'file' && typeof it.name === 'string' &&
-            it.name.toLowerCase().endsWith('.md') && it.name.toLowerCase() !== 'readme.md';
-        });
-        md.sort(function(a,b){ return (b.name||'').localeCompare(a.name||''); });
-        return md.slice(0, 30);
-      });
-    }
-
-    function fetchMdRaw(path, branch){
-      var raw = 'https://raw.githubusercontent.com/' + owner + '/' + repo + '/' + branch + '/' + path + '?v=' + Date.now();
-      return fetch(raw, {cache:'no-store'}).then(function(res){
-        if(!res.ok) throw new Error('HTTP ' + res.status);
-        return res.text();
-      });
-    }
-
-    function render(posts){
-      if(!posts.length){
-        list.innerHTML = '<li class="meta">아직 홈에 노출할 글이 없습니다.</li>';
-        return;
-      }
-      list.innerHTML = posts.map(function(p){
-        var title = escapeHtml(p.title || 'Untitled');
-        var url = escapeHtml(p.url || '#');
-        var img = p.image ? '<img src="'+escapeHtml(p.image)+'" alt="" loading="lazy" class="post-thumb" />' : '';
-        var date = p.date ? '<div class="small meta">'+escapeHtml(p.date)+'</div>' : '';
-        return (
-          '<li class="post-item">' +
-            img +
-            '<div class="post-text">' +
-              '<a class="post-link" href="'+url+'">'+title+'</a>' +
-              date +
-            '</div>' +
-          '</li>'
-        );
-      }).join('');
-    }
-
-    (function tryBranch(i){
-      if(i >= branches.length){
-        list.innerHTML = '<li class="meta">글 목록을 불러오지 못했습니다. (브랜치/main·master 확인 필요)</li>';
-        return;
-      }
-      var branch = branches[i];
-      listMdFiles(branch).then(function(files){
-        if(!files.length){ render([]); return; }
-
-        var limit = Math.min(files.length, 12);
-        var tasks = files.slice(0, limit).map(function(f){
-          var base = f.name.replace(/\.md$/i,'');
-          return fetchMdRaw(f.path, branch).then(function(md){
-            var title = pickTitle(md, base);
-            var image = pickImage(md);
-            var date = '';
-            var dm = base.match(/^(\d{4}-\d{2}-\d{2}|\d{8})/);
-            if(dm) date = dm[1];
-            return { title:title, url:'/' + base + '.html', image:image, date:date };
-          }).catch(function(){
-            return { title:base, url:'/' + base + '.html', image:'', date:'' };
-          });
-        });
-
-        Promise.all(tasks).then(render);
-      }).catch(function(){
-        tryBranch(i+1);
-      });
-    })(0);
-  })();
-  </script>
 
 </body>
 </html>
