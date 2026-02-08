@@ -1,54 +1,51 @@
 /* =========================================================
-   AI Now Insite - site.css (Final Fix for Mobile Header)
-   목적: 모바일 헤더 높이 축소 및 본문 가림 현상 해결
+   AI Now Insite - site.css (Stacked Mobile Header)
+   목적: 모바일에서 로고(위) + 메뉴(아래 한 줄) 배치
 ========================================================= */
 
-/* Reset */
+/* 1. 기본 설정 */
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 img { max-width: 100%; height: auto; display: block; }
 a { color: inherit; text-decoration: none; }
 
-/* Variables */
+/* 2. 변수 설정 */
 :root {
   --bg: #ffffff;
   --fg: #111111;
   --muted: rgba(17,17,17,0.72);
-  --line: rgba(17,17,17,0.12);
-  --card: #ffffff;
-  --card-border: #e0e0e0;
+  --line: #e0e0e0;
+  --card-bg: #ffffff;
   --radius: 12px;
   --max-width: 900px;
-  --header-h: 60px;   /* PC 기준 헤더 높이 */
+  --header-h: 60px; /* PC용 기본 높이 */
 }
 
+/* 3. 전체 레이아웃 */
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   background: #f9f9f9;
   color: var(--fg);
   line-height: 1.6;
   
-  /* ✅ [PC 기본] 헤더 높이만큼 여백 확보 */
-  padding-top: calc(var(--header-h) + 20px); 
+  /* [PC 기본] 헤더 높이만큼 여백 */
+  padding-top: 80px; 
 }
 
-/* Container */
 .container {
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 0 20px;
 }
 
-/* =========================================================
-   Fixed Header
-========================================================= */
+/* 4. 상단 고정 헤더 */
 .header {
   position: fixed;
   top: 0; left: 0; right: 0;
   z-index: 9999;
-  background: rgba(255, 255, 255, 0.98); /* 거의 불투명하게 */
+  background: rgba(255, 255, 255, 0.98);
   border-bottom: 1px solid var(--line);
-  box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
 }
 
 .header .topbar {
@@ -58,21 +55,22 @@ body {
   height: var(--header-h);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-between; /* PC는 양쪽 정렬 */
 }
 
-/* Logo */
+/* 로고 */
 .logo {
   font-size: 20px;
   font-weight: 800;
   color: #111;
+  letter-spacing: -0.5px;
   white-space: nowrap;
 }
 
-/* Navigation (PC) */
+/* 메뉴 (네비게이션) */
 .nav {
   display: flex;
-  gap: 15px;
+  gap: 10px;
   align-items: center;
 }
 
@@ -80,9 +78,10 @@ body {
   font-size: 15px;
   color: #555;
   font-weight: 500;
-  padding: 6px 10px;
+  padding: 6px 12px;
   border-radius: 6px;
   transition: all 0.2s;
+  white-space: nowrap;
 }
 
 .nav a:hover {
@@ -90,144 +89,98 @@ body {
   color: #000;
 }
 
-/* =========================================================
-   Content Styles
-========================================================= */
-.hero { padding: 10px 0 40px; } /* 상단 여백 최소화 */
+/* 5. 본문 스타일 */
+.hero { padding-bottom: 40px; }
 
 .card {
-  background: var(--card);
-  border: 1px solid var(--card-border);
+  background: var(--card-bg);
+  border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 30px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
 }
 
-hr {
-  border: 0;
-  border-top: 1px solid #eee;
-  margin: 24px 0;
-}
-
-.page-title, .site-title {
-  font-size: 24px;
-  font-weight: 800;
-  margin: 0 0 10px;
-  color: #111;
-}
-
-.site-subtitle {
-  color: #666;
-  margin: 0 0 20px;
-  font-size: 16px;
-}
-
-.h2 {
-  font-size: 18px;
-  font-weight: 700;
-  margin-top: 30px;
-  margin-bottom: 15px;
-  color: #222;
-}
-
+hr { border: 0; border-top: 1px solid #eee; margin: 24px 0; }
+.page-title, .site-title { font-size: 24px; font-weight: 800; margin: 0 0 10px; color: #111; }
+.site-subtitle { color: #666; margin: 0 0 20px; font-size: 16px; }
+.h2 { font-size: 18px; font-weight: 700; margin-top: 30px; margin-bottom: 15px; color: #222; border-bottom: 2px solid #f1f1f1; padding-bottom: 5px; }
 p { margin-bottom: 16px; word-break: keep-all; }
-
 .small, .meta { font-size: 13px; color: #888; }
+.code { background: #f4f6f8; padding: 15px; border-radius: 8px; font-size: 14px; color: #333; border: 1px solid #e1e4e8; overflow-x: auto; }
 
-.code {
-  background: #f4f6f8;
-  padding: 15px;
-  border-radius: 8px;
-  font-size: 14px;
-  color: #333;
-  border: 1px solid #e1e4e8;
-  overflow-x: auto;
-}
-
-/* List Styles */
+/* 6. 글 목록 스타일 */
 .list { list-style: none; padding: 0; margin: 0; }
-
-.post-item {
-  display: flex;
-  padding: 20px 0;
-  border-bottom: 1px solid #eee;
-}
+.post-item { display: flex; padding: 20px 0; border-bottom: 1px solid #eee; }
 .post-item:last-child { border-bottom: none; }
-
-.post-thumb {
-  width: 100px;
-  height: 70px;
-  border-radius: 8px;
-  object-fit: cover;
-  margin-right: 20px;
-  background: #eee;
-  flex-shrink: 0;
-}
-
+.post-thumb { width: 100px; height: 70px; border-radius: 8px; object-fit: cover; margin-right: 20px; background: #eee; flex-shrink: 0; }
 .post-text { flex: 1; min-width: 0; }
-
-.post-link {
-  font-size: 18px;
-  font-weight: 700;
-  color: #111;
-  display: block;
-  margin-bottom: 6px;
-  line-height: 1.4;
-}
-
+.post-link { font-size: 17px; font-weight: 700; color: #111; display: block; margin-bottom: 6px; line-height: 1.4; }
 .post-link:hover { color: #3b82f6; }
-
-.footer {
-  text-align: center;
-  padding: 40px 0;
-  color: #aaa;
-  font-size: 13px;
-}
+.footer { text-align: center; padding: 40px 0; color: #aaa; font-size: 13px; }
 
 /* =========================================================
-   🔥 Mobile Fix (여기가 핵심 수정됨)
+   🔥 [모바일 전용] 2층 구조 (로고 위 / 메뉴 아래 한 줄)
 ========================================================= */
 @media (max-width: 600px) {
   
-  /* 1. 본문을 헤더 높이보다 더 아래로 밀어버림 (겹침 해결) */
+  /* 1. 본문 시작 위치 조정 (헤더가 2단이라 90px 정도 필요) */
   body {
-    padding-top: 130px !important; 
+    padding-top: 90px !important;
   }
 
-  /* 2. 헤더 높이를 내용물에 맞게 자동 조절 */
+  /* 2. 헤더 레이아웃: 세로 배치 (Column) */
   .header .topbar {
-    flex-direction: column;
+    display: flex;
+    flex-direction: column; /* 위아래 배치 */
     height: auto;
-    padding: 10px 20px; /* 위아래 여백을 줄임 (헤더 다이어트) */
-    gap: 8px; /* 로고와 메뉴 사이 간격 좁힘 */
+    padding: 8px 0; /* 위아래 여백을 타이트하게 */
+    gap: 0;
   }
 
-  /* 3. 로고 크기 살짝 축소 */
+  /* 3. 로고: 1층 가운데 정렬 */
   .logo {
-    font-size: 18px;
-    margin-bottom: 0;
+    font-size: 19px;
+    margin-bottom: 4px; /* 메뉴와의 간격 */
+    width: 100%;
+    text-align: center; /* 로고 중앙 정렬 */
+    padding-bottom: 4px;
+    border-bottom: 1px solid #f5f5f5; /* 로고랑 메뉴 사이 얇은 구분선 */
   }
 
-  /* 4. 메뉴 버튼 크기와 간격 최적화 */
+  /* 4. 메뉴: 2층 한 줄 가로 스크롤 */
   .nav {
     width: 100%;
-    justify-content: center;
-    gap: 6px;
-    flex-wrap: wrap;
-    margin-bottom: 5px;
+    justify-content: center; /* 내용이 적으면 가운데 정렬 */
+    
+    /* 내용이 많으면 가로 스크롤 작동 */
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 4px 15px; /* 좌우 여백 */
+    
+    /* 스크롤바 숨기기 */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
-
-  .nav a {
-    font-size: 13px; /* 글자 크기 약간 줄임 */
-    padding: 5px 12px;
-    background: #f1f3f5;
-    border-radius: 15px;
-  }
-
-  /* 5. 모바일 카드 여백 및 썸네일 숨김 */
-  .card { padding: 20px; }
-  .post-thumb { display: none; }
-  .post-link { font-size: 16px; }
   
+  .nav::-webkit-scrollbar { display: none; }
+
+  /* 메뉴 버튼 스타일 */
+  .nav a {
+    font-size: 13px;
+    padding: 4px 10px;
+    background: transparent; /* 배경 없이 깔끔하게 */
+    color: #666;
+    margin: 0 2px;
+  }
+  
+  .nav a:hover {
+    color: #000;
+    background: #f5f5f5;
+  }
+
+  /* 모바일 카드 스타일 */
   .container { padding: 0 15px; }
+  .card { padding: 20px 15px; }
+  .post-thumb { display: none; }
 }
