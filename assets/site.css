@@ -96,7 +96,7 @@ body {
   background: var(--card-bg);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 30px;
+  padding: 46px 30px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.03);
 }
 
@@ -184,6 +184,7 @@ p { margin-bottom: 16px; word-break: keep-all; }
   .card { padding: 20px 15px; }
   .post-thumb { display: none; }
 }
+
 
 
 
