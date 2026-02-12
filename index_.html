@@ -1,0 +1,99 @@
+---
+layout: null
+---
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI Now Insight</title>
+  <meta name="description" content="AI Now Insight는 현재의 AI 기술과 관련 흐름을 정리해 소개하는 정보형 웹사이트입니다." />
+  <link rel="canonical" href="https://ainowinsight.com/" />
+  
+  <link rel="stylesheet" href="/assets/site.css?v=2" />
+  <style>
+  /* 페이지 넘김 버튼 스타일 */
+  .pagination { text-align: center; margin: 40px 0; font-family: sans-serif; }
+  .pagination a, .pagination span {
+    display: inline-block; padding: 10px 15px; margin: 0 5px;
+    border: 1px solid #ddd; border-radius: 5px; text-decoration: none; color: #333;
+  }
+  .pagination a:hover { background-color: #f5f5f5; }
+  .pagination .current { background-color: #007bff; color: white; border-color: #007bff; }
+  .pagination .disabled { color: #ccc; border-color: #eee; pointer-events: none; }
+</style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- ✅ 고정 상단 로고 + 메뉴 -->
+    <header class="header">
+      <div class="topbar">
+        <a class="logo" href="/">AI Now Insight</a>
+        <nav class="nav">
+          <a href="/about.html">소개</a>
+          <a href="/privacy.html">개인정보처리방침</a>
+          <a href="/terms.html">이용약관</a>
+          <a href="/contact.html">문의</a>
+        </nav>
+      </div>
+    </header>
+ 
+
+    <section class="hero">
+      <div class="card">
+        <h1 class="site-title">AI Now Insight</h1>
+        <p class="site-subtitle">현재의 AI 기술과 그 흐름을 정리해 살펴볼 수 있는 공간입니다.</p>
+
+        <div class="h2">최신 글</div>
+        <div class="meta" style="margin-bottom: 20px;">
+          글은 정보형 콘텐츠로 작성되며, 필요에 따라 내용이 보완될 수 있습니다.
+        </div>
+        <hr />
+
+        <ul class="list">
+          {% assign posts_source = paginator.posts | default: site.posts %}
+          {% for post in posts_source %}
+            <li class="post-item">
+              {% if post.image %}
+                <img src="{{ post.image | relative_url }}" alt="{{ post.title | escape }}" loading="lazy" class="post-thumb" />
+              {% endif %}
+              <div class="post-text">
+                <a class="post-link" href="{{ post.url | relative_url }}">{{ post.title }}</a>
+                <div class="small meta">{{ post.date | date: "%Y-%m-%d" }}</div>
+                <p style="font-size: 14px; color: #666; margin-top: 5px; margin-bottom: 0;">
+                  {{ post.excerpt | strip_html | truncate: 80 }}
+                </p>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+        {% if paginator.total_pages > 1 %}
+        <div class="pagination">
+          
+          {% if paginator.previous_page %}
+            <a href="{{ paginator.previous_page_path | relative_url }}">« 이전</a>
+          {% else %}
+            <span class="disabled">« 이전</span>
+          {% endif %}
+        
+          <span class="current">{{ paginator.page }} / {{ paginator.total_pages }}</span>
+        
+          {% if paginator.next_page %}
+            <a href="{{ paginator.next_page_path | relative_url }}">다음 »</a>
+          {% else %}
+            <span class="disabled">다음 »</span>
+          {% endif %}
+          
+        </div>
+        {% endif %}
+        </div>
+    </section>
+
+    <footer class="footer">
+      © AI Now Insight · <span class="meta">ainowinsight.com</span>
+    </footer>
+  </div>
+
+</body>
+</html>
