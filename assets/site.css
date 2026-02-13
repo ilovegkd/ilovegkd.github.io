@@ -208,6 +208,48 @@ p { margin-bottom: 16px; word-break: keep-all; }
 
 /* 이하 동일... */
 
+/* ===== Post content: tables ===== */
+.post-content table{
+  width:100%;
+  border-collapse:collapse;
+  margin:40px 0 48px;
+  background:#fff;
+}
+
+/* header/body cells */
+.post-content th,
+.post-content td{
+  border:1px solid #e5e7eb;
+  padding:14px 14px;
+  vertical-align:top;
+  line-height:1.75;
+}
+
+/* header row */
+.post-content thead th{
+  background:rgba(0,0,0,.06);
+}
+
+/* zebra rows (optional, subtle) */
+.post-content tbody tr:nth-child(even) td{
+  background:rgba(0,0,0,.02);
+}
+
+/* mobile: horizontal scroll for wide tables */
+.post-content .table-wrap{
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  padding-bottom:10px;
+}
+
+/* if table is not wrapped, still avoid overflow */
+.post-content table{
+  display:table;
+  max-width:100%;
+}
+
+
+
 
 
 
