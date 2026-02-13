@@ -185,6 +185,29 @@ p { margin-bottom: 16px; word-break: keep-all; }
   .post-thumb { display: none; }
 }
 
+.post-content{
+  font-size:17px;
+  line-height:2.05;
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 10px 0 0;
+  color:#1f2937;
+  word-break: keep-all;
+  letter-spacing:-0.2px;
+}
+
+.post-content h2{
+  margin:58px 0 18px;
+  font-size:22px;
+  font-weight:900;
+  padding:16px 16px;
+  border-left:6px solid rgba(0,0,0,.22);
+  background:rgba(0,0,0,.03);
+  border-radius:12px;
+}
+
+/* 이하 동일... */
+
 
 
 
