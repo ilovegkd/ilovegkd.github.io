@@ -65,7 +65,27 @@ layout: null
       <div class="post-content">
         {{ content }}
       </div>
-    
+
+      <!-- 이전 / 목록 / 다음 버튼 -->
+      <div class="post-nav">
+      
+        {% if page.previous %}
+          <a class="nav-btn prev" href="{{ page.previous.url | relative_url }}">
+            ← 이전 글
+          </a>
+        {% endif %}
+      
+        <a class="nav-btn list" href="/">
+          목록 보기
+        </a>
+      
+        {% if page.next %}
+          <a class="nav-btn next" href="{{ page.next.url | relative_url }}">
+            다음 글 →
+          </a>
+        {% endif %}
+      
+      </div>
     </main>
 
 
