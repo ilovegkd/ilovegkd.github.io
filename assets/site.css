@@ -281,6 +281,42 @@ p { margin-bottom: 16px; word-break: keep-all; }
   max-width:100%;
 }
 
+/* ===== 포스트 하단 네비게이션 ===== */
+.post-nav{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:50px;
+  padding-top:30px;
+  border-top:1px solid #e5e7eb;
+  gap:10px;
+}
+
+.nav-btn{
+  font-size:14px;
+  padding:10px 16px;
+  border:1px solid #ddd;
+  border-radius:8px;
+  background:#fff;
+  transition:all .2s ease;
+  color:#333;
+  text-decoration:none;
+}
+
+.nav-btn:hover{
+  background:#f3f4f6;
+}
+
+/* 모바일 정렬 */
+@media (max-width:600px){
+  .post-nav{
+    flex-direction:column;
+  }
+  .nav-btn{
+    width:100%;
+    text-align:center;
+  }
+}
 
 
 
