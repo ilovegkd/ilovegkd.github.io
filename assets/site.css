@@ -185,6 +185,30 @@ p { margin-bottom: 16px; word-break: keep-all; }
   .post-thumb { display: none; }
 }
 
+.post-meta{
+  font-size:14px;
+  color:#777;
+  margin-top:8px;
+  margin-bottom:10px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.post-badge{
+  background: rgba(0,0,0,.06);
+  padding:4px 10px;
+  border-radius:20px;
+  font-size:12px;
+  font-weight:600;
+}
+
+.post-divider{
+  border:0;
+  border-top:1px solid #e5e7eb;
+  margin:18px 0 28px;
+}
+
 .post-content{
   font-size:17px;
   line-height:2.05;
@@ -256,6 +280,7 @@ p { margin-bottom: 16px; word-break: keep-all; }
   display:table;
   max-width:100%;
 }
+
 
 
 
