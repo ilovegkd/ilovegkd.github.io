@@ -198,8 +198,8 @@ p { margin-bottom: 16px; word-break: keep-all; }
 
 .post-content h2{
   margin:58px 0 18px;
-  font-size:22px;
-  font-weight:900;
+  font-size:21px;
+  font-weight:700;
   padding:16px 0px;
   
   background:rgba(0,0,0,.03);
@@ -247,6 +247,7 @@ p { margin-bottom: 16px; word-break: keep-all; }
   display:table;
   max-width:100%;
 }
+
 
 
 
