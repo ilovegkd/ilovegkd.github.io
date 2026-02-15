@@ -284,12 +284,13 @@ p { margin-bottom: 16px; word-break: keep-all; }
 /* ===== 포스트 하단 네비게이션 ===== */
 .post-nav{
   display:flex;
-  justify-content:space-between;
+  justify-content:center;   /* 가운데 정렬 */
   align-items:center;
   margin-top:50px;
   padding-top:30px;
   border-top:1px solid #e5e7eb;
-  gap:10px;
+  gap:24px;                 /* 🔥 버튼 사이 간격 증가 */
+  flex-wrap:wrap;           /* 모바일 줄바꿈 안정 */
 }
 
 .nav-btn{
@@ -317,6 +318,7 @@ p { margin-bottom: 16px; word-break: keep-all; }
     text-align:center;
   }
 }
+
 
 
 
