@@ -60,8 +60,8 @@ layout: null
           <label for="modeFilter">글 유형</label>
           <select id="modeFilter">
             <option value="ALL">전체</option>
-            <option value="COMPARE">AI 비교·선택 가이드</option>
-            <option value="PROCESS">AI 과정·경험·현실</option>
+            <option value="NEWS">AI 최신 소식(업데이트)</option>
+            <option value="HOWTO">AI 활용 가이드(사용법)</option>
           </select>
         </div>
 
@@ -112,7 +112,7 @@ layout: null
     </footer>
   </div>
 
-  <!-- ✅ 필터 스크립트: post_mode 기준(COMPARE/PROCESS) -->
+  <!-- ✅ 필터 스크립트: post_mode 기준(NEWS/HOWTO) -->
   <script>
   (function(){
     var sel = document.getElementById("modeFilter");
