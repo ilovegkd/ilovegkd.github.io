@@ -319,6 +319,16 @@ p { margin-bottom: 16px; word-break: keep-all; }
   }
 }
 
+/* ===== 본문 링크 색상 ===== */
+.post-content a {
+  color: #2563eb; /* 자연스러운 블루 */
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.post-content a:hover {
+  color: #1d4ed8;
+}
 
 
 
