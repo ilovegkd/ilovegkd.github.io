@@ -21,7 +21,12 @@ layout: null
   .pagination a:hover { background-color: #f5f5f5; }
   .pagination .current { background-color: #007bff; color: white; border-color: #007bff; }
   .pagination .disabled { color: #ccc; border-color: #eee; pointer-events: none; }
-</style>
+
+  /* ✅ 유형 드롭다운(간단 스타일) */
+  .post-filter { display:flex; align-items:center; gap:10px; margin: 14px 0 18px; }
+  .post-filter label { font-size: 14px; color:#555; }
+  .post-filter select { padding: 8px 10px; border:1px solid #ddd; border-radius:8px; background:#fff; }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -43,18 +48,29 @@ layout: null
     <section class="hero">
       <div class="card">
         <h1 class="site-title">AI Now Insight</h1>
-        <p class="site-subtitle">현재의 AI 기술과 그 흐름을 정리해 살펴볼 수 있는 공간입니다.</p>
+        <p class="site-subtitle">빠르게 변하는 AI 시대, 무엇을 쓰고 어떻게 활용할지 함께 고민하는 공간입니다.</p>
 
         <div class="h2">최신 글</div>
         <div class="meta" style="margin-bottom: 20px;">
           글은 정보형 콘텐츠로 작성되며, 필요에 따라 내용이 보완될 수 있습니다.
         </div>
+
+        <!-- ✅ 드롭다운 필터 (전체/비교/과정) -->
+        <div class="post-filter">
+          <label for="modeFilter">글 유형</label>
+          <select id="modeFilter">
+            <option value="ALL">전체</option>
+            <option value="NEWS">AI 최신 소식(업데이트)</option>
+            <option value="HOWTO">AI 활용 가이드(사용법)</option>
+          </select>
+        </div>
+
         <hr />
 
-        <ul class="list">
+        <ul class="list" id="postList">
           {% assign posts_source = paginator.posts | default: site.posts %}
           {% for post in posts_source %}
-            <li class="post-item">
+            <li class="post-item" data-mode="{{ post.post_mode | default: '' }}">
               {% if post.image %}
                 <img src="{{ post.image | relative_url }}" alt="{{ post.title | escape }}" loading="lazy" class="post-thumb" />
               {% endif %}
@@ -68,6 +84,7 @@ layout: null
             </li>
           {% endfor %}
         </ul>
+
         {% if paginator.total_pages > 1 %}
         <div class="pagination">
           
@@ -94,6 +111,34 @@ layout: null
       © AI Now Insight · <span class="meta">ainowinsight.com</span>
     </footer>
   </div>
+
+  <!-- ✅ 필터 스크립트: post_mode 기준(NEWS/HOWTO) -->
+  <script>
+  (function(){
+    var sel = document.getElementById("modeFilter");
+    var list = document.getElementById("postList");
+    if (!sel || !list) return;
+
+    var items = list.querySelectorAll(".post-item");
+
+    function apply(){
+      var v = (sel.value || "ALL").toUpperCase();
+      for (var i = 0; i < items.length; i++) {
+        var m = (items[i].getAttribute("data-mode") || "").toUpperCase();
+
+        // post_mode가 없는 예전 글은 "전체"에서만 보이게 처리
+        if (v === "ALL") {
+          items[i].style.display = "";
+        } else {
+          items[i].style.display = (m === v) ? "" : "none";
+        }
+      }
+    }
+
+    sel.addEventListener("change", apply);
+    apply();
+  })();
+  </script>
 
 </body>
 </html>
