@@ -1,1 +1,335 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>통합 앱 런처 - 다크 모드</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+        
+        /* 전체 폰트 및 기본 설정 */
+        body, html { 
+            height: 100%; 
+            margin: 0; 
+            overflow: hidden; 
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', 'Segoe UI', 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+        }
+        
+        /* 미니멀한 커스텀 스크롤바 (다크 모드용) */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 antialiased selection:bg-indigo-500/30 selection:text-indigo-200">
 
+    <!-- ========================================== -->
+    <!-- 1. 메인 홈 화면 (앱 목록 및 등록) -->
+    <!-- ========================================== -->
+    <div id="home-view" class="h-full overflow-y-auto p-6 md:p-12 transition-all duration-500 ease-in-out">
+        <div class="max-w-5xl mx-auto">
+            <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
+                <div>
+                    <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white">내 앱 공간 <span class="text-indigo-400">.</span></h1>
+                    <p class="text-slate-400 mt-2 font-medium">원하는 앱을 실행하거나 새로운 앱을 연결해 보세요.</p>
+                </div>
+                <button onclick="openAddModal()" class="bg-slate-800 hover:bg-slate-700 text-indigo-400 border border-slate-700 hover:border-slate-600 px-6 py-3 rounded-full shadow-lg font-semibold transition-all flex items-center gap-2 group">
+                    <span class="w-6 h-6 rounded-full bg-slate-900 text-indigo-400 flex items-center justify-center group-hover:bg-indigo-500 group-hover:text-white transition-colors">+</span>
+                    앱 등록하기
+                </button>
+            </header>
+
+            <!-- 앱 목록이 표시될 그리드 -->
+            <div id="app-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-5 md:gap-8 pb-10">
+                <!-- 자바스크립트로 이곳에 앱 버튼들이 생성됩니다 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 2. 앱 실행 화면 (iframe) -->
+    <!-- ========================================== -->
+    <div id="app-view" class="hidden h-full w-full absolute top-0 left-0 bg-slate-950 flex flex-col z-10 transition-opacity duration-300">
+        <!-- 상단 네비게이션 바 (다크 Glassmorphism 적용) -->
+        <div class="h-14 bg-slate-900/80 backdrop-blur-md border-b border-slate-800 text-slate-100 flex items-center px-4 z-20 shrink-0 justify-between">
+            <div class="flex items-center gap-2">
+                <button onclick="closeApp()" class="p-2 hover:bg-slate-800 rounded-full transition-colors flex items-center justify-center group" aria-label="홈으로">
+                    <svg class="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </button>
+                <span id="current-app-title" class="font-bold text-base ml-1">앱 이름</span>
+            </div>
+            <!-- 새로고침 버튼 -->
+            <button onclick="refreshApp()" class="p-2 hover:bg-slate-800 rounded-full transition-colors group" title="새로고침">
+                <svg class="w-4 h-4 text-slate-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+            </button>
+        </div>
+        
+       
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 3. 새 앱 등록 팝업 (모달) -->
+    <!-- ========================================== -->
+    <div id="add-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-opacity duration-300">
+        <div class="bg-slate-800 border border-slate-700 rounded-3xl shadow-2xl w-full max-w-sm p-7 transform transition-all scale-95 opacity-0" id="add-modal-content">
+            <h2 class="text-xl font-bold mb-6 text-white">새 앱 등록 ✨</h2>
+            
+            <div class="mb-5">
+                <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">앱 이름</label>
+                <input type="text" id="input-app-name" placeholder="예: 나의 다이어리" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl p-3 text-sm focus:bg-slate-950 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all placeholder-slate-600">
+            </div>
+            
+            <div class="mb-8">
+                <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">파일 이름 (경로)</label>
+                <input type="text" id="input-app-url" placeholder="예: 07.html" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl p-3 text-sm focus:bg-slate-950 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all placeholder-slate-600">
+                <p class="text-[11px] text-slate-500 mt-2">같은 폴더에 있는 파일명(확장자 포함)을 입력하세요.</p>
+            </div>
+            
+            <div class="flex justify-end gap-2">
+                <button onclick="closeAddModal()" class="px-5 py-2.5 text-sm font-semibold text-slate-400 hover:bg-slate-700 hover:text-white rounded-xl transition-colors">취소</button>
+                <button onclick="saveNewApp()" class="px-5 py-2.5 text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl shadow-lg hover:shadow-indigo-500/25 transition-all">등록하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 4. 앱 이름 수정 팝업 (모달) -->
+    <!-- ========================================== -->
+    <div id="edit-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-opacity duration-300">
+        <div class="bg-slate-800 border border-slate-700 rounded-3xl shadow-2xl w-full max-w-sm p-7 transform transition-all scale-95 opacity-0" id="edit-modal-content">
+            <h2 class="text-xl font-bold mb-6 text-white">앱 이름 수정 ✏️</h2>
+            
+            <div class="mb-8">
+                <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">새 앱 이름</label>
+                <input type="text" id="input-edit-name" placeholder="새로운 이름을 입력하세요" class="w-full bg-slate-900 border border-slate-700 text-white rounded-xl p-3 text-sm focus:bg-slate-950 focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 outline-none transition-all placeholder-slate-600">
+            </div>
+            
+            <div class="flex justify-end gap-2">
+                <button onclick="closeEditModal()" class="px-5 py-2.5 text-sm font-semibold text-slate-400 hover:bg-slate-700 hover:text-white rounded-xl transition-colors">취소</button>
+                <button onclick="saveEditApp()" class="px-5 py-2.5 text-sm font-semibold bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl shadow-lg hover:shadow-indigo-500/25 transition-all">저장하기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- 자바스크립트 로직 -->
+    <!-- ========================================== -->
+    <script>
+        // 기본으로 제공할 앱 목록 (디자인에 맞게 그라데이션 색상 적용)
+        const defaultApps = [
+            { id: 1, name: "앱 01", url: "01.html", color: "bg-gradient-to-br from-rose-500 to-red-600" },
+            { id: 2, name: "앱 02", url: "02.html", color: "bg-gradient-to-br from-orange-500 to-amber-600" },
+            { id: 3, name: "앱 03", url: "03.html", color: "bg-gradient-to-br from-emerald-500 to-teal-600" },
+            { id: 4, name: "앱 04", url: "04.html", color: "bg-gradient-to-br from-cyan-500 to-blue-600" },
+            { id: 5, name: "앱 05", url: "05.html", color: "bg-gradient-to-br from-indigo-500 to-purple-600" },
+            { id: 6, name: "앱 06", url: "06.html", color: "bg-gradient-to-br from-fuchsia-500 to-pink-600" }
+        ];
+
+        // 랜덤 배경색을 위한 배열
+        const colorPresets = [
+            "bg-gradient-to-br from-blue-500 to-indigo-600", 
+            "bg-gradient-to-br from-violet-500 to-fuchsia-600", 
+            "bg-gradient-to-br from-pink-500 to-rose-600",
+            "bg-gradient-to-br from-teal-500 to-emerald-600",
+            "bg-gradient-to-br from-amber-500 to-orange-600",
+            "bg-gradient-to-br from-slate-600 to-slate-800"
+        ];
+
+        // 상태 변수
+        let myApps = [];
+        let currentEditId = null;
+
+        // 1. 초기화 (앱 목록 불러오기)
+        function init() {
+            const savedApps = localStorage.getItem('myCustomApps');
+            if (savedApps) {
+                myApps = JSON.parse(savedApps);
+                // 혹시 예전 단색 클래스가 남아있다면 그라데이션으로 변환 (하위호환)
+                myApps = myApps.map((app, index) => {
+                    if(!app.color.includes('gradient')) {
+                        app.color = defaultApps[index] ? defaultApps[index].color : colorPresets[Math.floor(Math.random() * colorPresets.length)];
+                    }
+                    return app;
+                });
+            } else {
+                myApps = [...defaultApps];
+                saveToLocalStorage();
+            }
+            renderApps();
+        }
+
+        // 2. 화면에 앱 목록 그리기
+        function renderApps() {
+            const grid = document.getElementById('app-grid');
+            grid.innerHTML = '';
+
+            myApps.forEach(app => {
+                const card = document.createElement('div');
+                // 다크 모드 카드 디자인 (어두운 배경, 테두리, 그림자 강조)
+                card.className = `group cursor-pointer bg-slate-800 rounded-3xl p-5 flex flex-col items-center justify-center text-center transition-all duration-300 hover:shadow-2xl hover:shadow-black/50 hover:-translate-y-1.5 border border-slate-700 hover:border-slate-600 relative overflow-hidden`;
+                
+                card.onclick = () => openApp(app.url, app.name);
+
+                // 아이콘 생성
+                const initial = app.name.charAt(0).toUpperCase();
+
+                card.innerHTML = `
+                    <div class="w-16 h-16 rounded-[20px] flex items-center justify-center text-2xl font-bold text-white mb-4 shadow-lg group-hover:scale-105 transition-transform duration-300 ${app.color}">
+                        ${initial}
+                    </div>
+                    <h3 class="font-bold text-sm text-slate-100 truncate w-full">${app.name}</h3>
+                    <p class="text-[10px] text-slate-400 mt-1 truncate w-full tracking-wider" title="${app.url}">${app.url}</p>
+                `;
+                
+                // 버튼 그룹 컨테이너 (호버 시 부드럽게 나타남)
+                const actionContainer = document.createElement('div');
+                actionContainer.className = "absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300";
+
+                // 수정 버튼
+                const editBtn = document.createElement('button');
+                editBtn.className = "w-7 h-7 flex items-center justify-center bg-slate-700/90 backdrop-blur border border-slate-600 text-slate-300 hover:text-indigo-400 hover:border-indigo-400 rounded-full shadow-sm transition-colors";
+                editBtn.innerHTML = `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>`;
+                editBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    openEditModal(app.id);
+                };
+                actionContainer.appendChild(editBtn);
+                
+                // 삭제 버튼 (추가된 앱에만)
+                if (app.id > 6) {
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.className = "w-7 h-7 flex items-center justify-center bg-slate-700/90 backdrop-blur border border-slate-600 text-slate-300 hover:text-rose-400 hover:border-rose-400 rounded-full shadow-sm transition-colors";
+                    deleteBtn.innerHTML = `<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>`;
+                    deleteBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        deleteApp(app.id);
+                    };
+                    actionContainer.appendChild(deleteBtn);
+                }
+
+                card.appendChild(actionContainer);
+                grid.appendChild(card);
+            });
+        }
+
+       
+
+        
+
+        // 5. 새로고침
+        function refreshApp() {
+            const iframe = document.getElementById('app-frame');
+            iframe.src = iframe.src;
+        }
+
+        // 애니메이션 효과를 동반한 모달 제어 함수
+        function showModal(modalId, contentId) {
+            const modal = document.getElementById(modalId);
+            const content = document.getElementById(contentId);
+            modal.classList.remove('hidden');
+            // 애니메이션을 위한 약간의 지연
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function hideModal(modalId, contentId) {
+            const modal = document.getElementById(modalId);
+            const content = document.getElementById(contentId);
+            modal.classList.add('opacity-0');
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // 6. 팝업창 제어 (등록)
+        function openAddModal() {
+            showModal('add-modal', 'add-modal-content');
+            setTimeout(() => document.getElementById('input-app-name').focus(), 100);
+        }
+
+        function closeAddModal() {
+            hideModal('add-modal', 'add-modal-content');
+            setTimeout(() => {
+                document.getElementById('input-app-name').value = '';
+                document.getElementById('input-app-url').value = '';
+            }, 300);
+        }
+
+        // 7. 새 앱 추가
+        function saveNewApp() {
+            const nameInput = document.getElementById('input-app-name').value.trim();
+            const urlInput = document.getElementById('input-app-url').value.trim();
+
+            if (!nameInput || !urlInput) {
+                alert("앱 이름과 파일 이름을 모두 입력해주세요.");
+                return;
+            }
+
+            const newId = myApps.length > 0 ? Math.max(...myApps.map(a => a.id)) + 1 : 1;
+            const randomColor = colorPresets[Math.floor(Math.random() * colorPresets.length)];
+
+            myApps.push({ id: newId, name: nameInput, url: urlInput, color: randomColor });
+            saveToLocalStorage();
+            renderApps();
+            closeAddModal();
+        }
+
+        // 8. 추가된 앱 삭제
+        function deleteApp(id) {
+            if (confirm("정말로 이 앱을 목록에서 삭제하시겠습니까?")) {
+                myApps = myApps.filter(app => app.id !== id);
+                saveToLocalStorage();
+                renderApps();
+            }
+        }
+
+        // 9. 앱 이름 수정
+        function openEditModal(id) {
+            currentEditId = id;
+            const app = myApps.find(a => a.id === id);
+            if (app) {
+                document.getElementById('input-edit-name').value = app.name;
+                showModal('edit-modal', 'edit-modal-content');
+                setTimeout(() => document.getElementById('input-edit-name').focus(), 100);
+            }
+        }
+
+        function closeEditModal() {
+            hideModal('edit-modal', 'edit-modal-content');
+            currentEditId = null;
+        }
+
+        function saveEditApp() {
+            const newName = document.getElementById('input-edit-name').value.trim();
+            if (!newName) {
+                alert("앱 이름을 입력해주세요.");
+                return;
+            }
+            const appIndex = myApps.findIndex(a => a.id === currentEditId);
+            if (appIndex !== -1) {
+                myApps[appIndex].name = newName;
+                saveToLocalStorage();
+                renderApps();
+                closeEditModal();
+            }
+        }
+
+        // 10. 브라우저 저장소 기록
+        function saveToLocalStorage() {
+            localStorage.setItem('myCustomApps', JSON.stringify(myApps));
+        }
+		function openApp(url, name) {
+			location.href = url;
+		}
+        window.onload = init;
+    </script>
+</body>
+</html>
