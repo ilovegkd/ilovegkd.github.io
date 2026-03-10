@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suno Vibe Architect</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- React & ReactDOM -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        /* Custom Scrollbar & Animations */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(30, 41, 59, 0.5);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(219, 39, 119, 0.5);
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(219, 39, 119, 0.8);
+        }
+        @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .spin-slow {
+            animation: spin-slow 10s linear infinite;
+        }
+        body {
+            background-color: #0f111a;
+        }
+        /* 툴팁 화살표를 위한 스타일 */
+        .tooltip-arrow {
+            width: 0; 
+            height: 0; 
+            border-left: 6px solid transparent;
+            border-right: 6px solid transparent;
+            border-top: 6px solid #1e293b;
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    </style>
+</head>
+<body class="text-slate-200 font-sans selection:bg-pink-500 selection:text-white pb-20">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- Icons (Inline SVGs to remove external dependencies) ---
+        const Icon = ({ path, size = 18, className = "" }) => (
+            <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                width={size} 
+                height={size} 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round" 
+                className={className}
+            >
+                {path}
+            </svg>
+        );
+
+        const Icons = {
+            Music: (props) => <Icon {...props} path={<><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></>} />,
+            Copy: (props) => <Icon {...props} path={<><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></>} />,
+            RefreshCw: (props) => <Icon {...props} path={<><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></>} />,
+            Trash2: (props) => <Icon {...props} path={<><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></>} />,
+            Edit2: (props) => <Icon {...props} path={<><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></>} />,
+            Sparkles: (props) => <Icon {...props} path={<><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M9 5H5"/><path d="M19 3v4"/><path d="M15 5h4"/><path d="M5 19v4"/><path d="M9 21H5"/><path d="M19 19v4"/><path d="M15 21h4"/></>} />,
+            History: (props) => <Icon {...props} path={<><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></>} />,
+            Check: (props) => <Icon {...props} path={<><polyline points="20 6 9 17 4 12"/></>} />,
+            Save: (props) => <Icon {...props} path={<><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/></>} />,
+            Disc: (props) => <Icon {...props} path={<><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="2"/></>} />,
+            PlayCircle: (props) => <Icon {...props} path={<><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></>} />,
+            Plus: (props) => <Icon {...props} path={<><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></>} />,
+            Search: (props) => <Icon {...props} path={<><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></>} />
+        };
+
+        // --- Helper Components ---
+        const SectionTitle = ({ icon: IconComponent, title }) => (
+            <div className="flex items-center gap-2 mb-3 text-slate-300 font-semibold border-b border-slate-700 pb-2">
+                <IconComponent size={18} className="text-pink-400" />
+                <span>{title}</span>
+            </div>
+        );
+
+        // --- Main App Component ---
+        function App() {
+            // Output State
+            const [generatedPrompt, setGeneratedPrompt] = useState("");
+            const [history, setHistory] = useState([]);
+            const [copyFeedback, setCopyFeedback] = useState(false);
+            
+            // Custom Presets State
+            const [presets, setPresets] = useState([]);
+            const [newPresetTitle, setNewPresetTitle] = useState("");
+            const [newPresetWorldview, setNewPresetWorldview] = useState("Midnight Urban Pop");
+            const [newPresetPrompt, setNewPresetPrompt] = useState("");
+            const [activePreset, setActivePreset] = useState(null);
+            
+            // Modal & Edit State
+            const [isModalOpen, setIsModalOpen] = useState(false);
+            const [editPresetId, setEditPresetId] = useState(null);
+
+            // Filter & Search State
+            const [searchTerm, setSearchTerm] = useState("");
+            const [filterWorldview, setFilterWorldview] = useState("All");
+
+            // Initialize storage (History & Presets)
+            useEffect(() => {
+                const savedHistory = localStorage.getItem('suno-vibes-history');
+                if (savedHistory) {
+                    try { setHistory(JSON.parse(savedHistory)); } catch(e) {}
+                }
+
+                const savedPresets = localStorage.getItem('suno-vibes-custom-presets');
+                if (savedPresets) {
+                    try { setPresets(JSON.parse(savedPresets)); } catch(e) {}
+                }
+            }, []);
+
+            useEffect(() => {
+                localStorage.setItem('suno-vibes-history', JSON.stringify(history));
+            }, [history]);
+
+            useEffect(() => {
+                localStorage.setItem('suno-vibes-custom-presets', JSON.stringify(presets));
+            }, [presets]);
+
+            // Handlers
+            const openAddModal = () => {
+                setNewPresetTitle("");
+                setNewPresetWorldview("Midnight Urban Pop");
+                setNewPresetPrompt("");
+                setEditPresetId(null);
+                setIsModalOpen(true);
+            };
+
+            const closeModal = () => {
+                setNewPresetTitle("");
+                setNewPresetWorldview("Midnight Urban Pop");
+                setNewPresetPrompt("");
+                setEditPresetId(null);
+                setIsModalOpen(false);
+            };
+
+            const handleSavePreset = () => {
+                if (!newPresetTitle.trim() || !newPresetPrompt.trim()) return;
+                
+                if (editPresetId) {
+                    // 수정 모드
+                    setPresets(presets.map(p => 
+                        p.id === editPresetId 
+                            ? { ...p, title: newPresetTitle, worldview: newPresetWorldview, prompt: newPresetPrompt } 
+                            : p
+                    ));
+
+                    // 현재 활성화된 프리셋을 수정했다면 출력창 내용도 갱신
+                    if (activePreset === editPresetId) {
+                        setGeneratedPrompt(newPresetPrompt);
+                    }
+                } else {
+                    // 추가 모드
+                    const newPreset = {
+                        id: Date.now(),
+                        title: newPresetTitle,
+                        worldview: newPresetWorldview,
+                        prompt: newPresetPrompt
+                    };
+                    setPresets([newPreset, ...presets]); // 최신 항목이 위로 오도록 추가
+                }
+                
+                closeModal();
+            };
+
+            const handleEditClick = (e, preset) => {
+                e.stopPropagation();
+                setNewPresetTitle(preset.title);
+                setNewPresetWorldview(preset.worldview);
+                setNewPresetPrompt(preset.prompt);
+                setEditPresetId(preset.id);
+                setIsModalOpen(true);
+            };
+
+            const handleDeletePreset = (e, id) => {
+                e.stopPropagation();
+                setPresets(presets.filter(p => p.id !== id));
+                if (activePreset === id) {
+                    setActivePreset(null);
+                    setGeneratedPrompt("");
+                }
+            };
+
+            const handlePresetClick = (preset) => {
+                setActivePreset(preset.id);
+                setGeneratedPrompt(preset.prompt);
+            };
+
+            const resetToManual = () => {
+                setActivePreset(null);
+                setGeneratedPrompt("");
+            };
+
+            const handleCopy = () => {
+                if (!generatedPrompt) return;
+                
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(generatedPrompt);
+                } else {
+                    const textArea = document.createElement("textarea");
+                    textArea.value = generatedPrompt;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand("copy");
+                    document.body.removeChild(textArea);
+                }
+
+                setCopyFeedback(true);
+                
+                if (history.length === 0 || history[0] !== generatedPrompt) {
+                    setHistory([generatedPrompt, ...history].slice(0, 20));
+                }
+
+                setTimeout(() => setCopyFeedback(false), 2000);
+            };
+
+            // Filtered Presets Logic
+            const filteredPresets = presets.filter((p) => {
+                const matchesSearch = p.title.toLowerCase().includes(searchTerm.toLowerCase()) || p.prompt.toLowerCase().includes(searchTerm.toLowerCase());
+                const matchesWorldview = filterWorldview === "All" || p.worldview === filterWorldview;
+                return matchesSearch && matchesWorldview;
+            });
+
+            return (
+                <div className="min-h-screen p-4 md:p-8">
+                    <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        
+                        {/* Header */}
+                        <div className="lg:col-span-12 flex flex-col md:flex-row justify-between items-center mb-2 gap-4 border-b border-slate-800 pb-6">
+                            <div className="flex items-center gap-3">
+                                <div className="bg-gradient-to-br from-pink-500 to-rose-600 p-3 rounded-xl shadow-lg shadow-pink-900/20">
+                                    <Icons.Disc size={32} className="text-white spin-slow" />
+                                </div>
+                                <div>
+                                    <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-pink-200">
+                                        Suno Vibe Architect
+                                    </h1>
+                                    <p className="text-pink-400/80 text-sm mt-1 font-medium tracking-wide">
+                                        POP & R&B EDITION (FEMALE VOCALS ONLY)
+                                    </p>
+                                </div>
+                            </div>
+                            <div className="flex gap-2">
+                                <button 
+                                    onClick={resetToManual}
+                                    className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-400 rounded-lg transition-colors border border-slate-700 font-medium text-sm"
+                                >
+                                    <Icons.RefreshCw size={16} />
+                                    <span>초기화</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Left Column: Presets & Controls */}
+                        <div className="lg:col-span-7 space-y-6">
+                            
+                            {/* Custom Presets Section */}
+                            <div className="bg-slate-900/40 p-5 rounded-2xl border border-pink-900/30 flex flex-col h-full">
+                                {/* Header & Add Button */}
+                                <div className="flex justify-between items-center mb-5 border-b border-slate-700 pb-3">
+                                    <div className="flex items-center gap-2 text-slate-300 font-semibold">
+                                        <Icons.PlayCircle size={18} className="text-pink-400" />
+                                        <span>나만의 스타일 프리셋</span>
+                                    </div>
+                                    <button 
+                                        onClick={openAddModal}
+                                        className="flex items-center gap-1.5 px-3 py-1.5 bg-pink-600 hover:bg-pink-500 text-white rounded-lg text-xs font-bold transition-all shadow-md shadow-pink-900/20"
+                                    >
+                                        <Icons.Plus size={14} />
+                                        새 프리셋
+                                    </button>
+                                </div>
+                                
+                                {/* 검색 및 필터 UI */}
+                                <div className="mb-4 space-y-3">
+                                    <div className="relative">
+                                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <Icons.Search size={16} className="text-slate-500" />
+                                        </div>
+                                        <input
+                                            type="text"
+                                            placeholder="저장된 곡명 또는 프롬프트 검색..."
+                                            value={searchTerm}
+                                            onChange={(e) => setSearchTerm(e.target.value)}
+                                            className="w-full bg-slate-800/50 border border-slate-700 rounded-lg pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-pink-500 text-slate-200 transition-colors"
+                                        />
+                                    </div>
+                                    
+                                    <div className="flex flex-wrap gap-2">
+                                        {["All", "Midnight Urban Pop", "Midnight Drive"].map(vw => (
+                                            <button
+                                                key={vw}
+                                                onClick={() => setFilterWorldview(vw)}
+                                                className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all duration-200 border ${
+                                                    filterWorldview === vw 
+                                                        ? 'bg-slate-700 border-slate-500 text-white' 
+                                                        : 'bg-slate-800/40 border-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-200'
+                                                }`}
+                                            >
+                                                {vw === "All" ? "전체 보기" : vw}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* 프리셋 리스트 (컴팩트 버전) */}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[550px] overflow-y-auto custom-scrollbar pr-2 mt-2">
+                                    {filteredPresets.length === 0 ? (
+                                        <div className="col-span-1 sm:col-span-2 text-center py-16 text-slate-500 text-sm border border-dashed border-slate-700 rounded-xl bg-slate-800/20">
+                                            {presets.length === 0 
+                                                ? "등록된 프리셋이 없습니다. 우측 상단의 '새 프리셋' 버튼을 눌러 추가해보세요." 
+                                                : "검색 조건에 맞는 프리셋이 없습니다."}
+                                        </div>
+                                    ) : (
+                                        filteredPresets.map((preset, idx) => (
+                                            <div key={preset.id} className="relative group h-full">
+                                                <button
+                                                    onClick={() => handlePresetClick(preset)}
+                                                    className={`w-full text-left p-3 rounded-xl border transition-all duration-200 h-full flex items-center justify-between pr-16 ${
+                                                        activePreset === preset.id
+                                                            ? "bg-pink-900/20 border-pink-500/50 ring-1 ring-pink-500/50"
+                                                            : "bg-slate-800/40 border-slate-700/50 hover:bg-slate-800 hover:border-pink-500/30"
+                                                    }`}
+                                                >
+                                                    <div className="flex flex-col gap-1.5 min-w-0 w-full">
+                                                        <span className={`font-bold text-sm ${activePreset === preset.id ? "text-pink-300" : "text-slate-200 group-hover:text-pink-200"} truncate block`}>
+                                                            {preset.title}
+                                                        </span>
+                                                        <span className="text-[10px] px-2 py-0.5 rounded text-pink-400 bg-pink-900/30 border border-pink-800/50 w-fit font-medium">
+                                                            {preset.worldview || "Midnight Urban Pop"}
+                                                        </span>
+                                                    </div>
+                                                </button>
+                                                
+                                                <div className="absolute top-1/2 -translate-y-1/2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <button 
+                                                        onClick={(e) => handleEditClick(e, preset)}
+                                                        className="p-1.5 text-slate-500 hover:text-blue-400 hover:bg-slate-700/80 rounded-md transition-colors"
+                                                        title="프리셋 수정"
+                                                    >
+                                                        <Icons.Edit2 size={16} />
+                                                    </button>
+                                                    <button 
+                                                        onClick={(e) => handleDeletePreset(e, preset.id)}
+                                                        className="p-1.5 text-slate-500 hover:text-red-400 hover:bg-slate-700/80 rounded-md transition-colors"
+                                                        title="프리셋 삭제"
+                                                    >
+                                                        <Icons.Trash2 size={16} />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Right Column: Output & History */}
+                        <div className="lg:col-span-5 space-y-6">
+                            
+                            {/* Output Preview */}
+                            <div className="sticky top-6">
+                                <div className="bg-gradient-to-b from-slate-800 via-slate-900 to-slate-950 p-6 rounded-2xl border border-slate-700 shadow-2xl">
+                                    <div className="flex items-center justify-between mb-4">
+                                        <h2 className="text-lg font-bold text-white flex items-center gap-2">
+                                            <Icons.Check className="text-green-400" size={20} />
+                                            생성된 프롬프트
+                                        </h2>
+                                        {activePreset && (
+                                            <span className="text-xs px-2 py-1 rounded bg-pink-900/50 text-pink-300 border border-pink-700/50 font-medium">
+                                                프리셋 적용됨
+                                            </span>
+                                        )}
+                                    </div>
+                                    
+                                    <textarea
+                                        value={generatedPrompt}
+                                        onChange={(e) => {
+                                            setGeneratedPrompt(e.target.value);
+                                            setActivePreset(null); // 사용자가 직접 수정하면 활성 프리셋 해제
+                                        }}
+                                        placeholder="왼쪽에서 프리셋을 선택하거나 여기에 직접 프롬프트를 작성하세요."
+                                        className="w-full h-64 bg-[#0a0c10] p-4 rounded-xl text-slate-200 border border-slate-800 focus:outline-none focus:border-pink-500 resize-none font-mono text-sm leading-relaxed shadow-inner"
+                                    ></textarea>
+
+                                    <button
+                                        onClick={handleCopy}
+                                        disabled={!generatedPrompt}
+                                        className={`w-full mt-6 py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-all duration-300 transform active:scale-[0.98] ${
+                                            !generatedPrompt 
+                                                ? "bg-slate-800 text-slate-600 border border-slate-700 cursor-not-allowed"
+                                                : copyFeedback
+                                                    ? "bg-green-600 text-white shadow-[0_0_20px_rgba(22,163,74,0.4)]"
+                                                    : "bg-pink-600 hover:bg-pink-500 text-white shadow-[0_0_20px_rgba(219,39,119,0.3)] hover:shadow-[0_0_30px_rgba(219,39,119,0.5)]"
+                                        }`}
+                                    >
+                                        {copyFeedback ? (
+                                            <React.Fragment>
+                                                <Icons.Check size={24} />
+                                                복사 완료!
+                                            </React.Fragment>
+                                        ) : (
+                                            <React.Fragment>
+                                                <Icons.Copy size={24} />
+                                                프롬프트 복사하기
+                                            </React.Fragment>
+                                        )}
+                                    </button>
+                                </div>
+
+                                {/* History Section */}
+                                <div className="mt-6 bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden">
+                                    <div className="p-4 border-b border-slate-800 bg-slate-900/80 flex justify-between items-center">
+                                        <h3 className="font-semibold text-slate-300 flex items-center gap-2">
+                                            <Icons.Save size={16} />
+                                            최근 기록
+                                        </h3>
+                                        {history.length > 0 && (
+                                            <button onClick={() => setHistory([])} className="text-xs text-red-400 hover:text-red-300 font-medium">
+                                                기록 삭제
+                                            </button>
+                                        )}
+                                    </div>
+                                    <div className="max-h-60 overflow-y-auto p-2 space-y-2 custom-scrollbar">
+                                        {history.length === 0 ? (
+                                            <div className="text-center py-8 text-slate-600 text-sm">
+                                                아직 생성된 기록이 없습니다.
+                                            </div>
+                                        ) : (
+                                            history.map((item, idx) => (
+                                                <div key={idx} className="group flex items-start gap-2 bg-slate-800/50 hover:bg-slate-800 p-3 rounded-lg transition-colors border border-transparent hover:border-slate-700">
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className="text-xs text-slate-300 line-clamp-2 font-mono leading-relaxed">{item}</p>
+                                                    </div>
+                                                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <button 
+                                                            onClick={() => {
+                                                                navigator.clipboard.writeText(item);
+                                                            }}
+                                                            className="p-1.5 hover:bg-slate-700 rounded text-slate-400 hover:text-white"
+                                                            title="복사"
+                                                        >
+                                                            <Icons.Copy size={14} />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    {/* Modal Layer for Adding/Editing Preset */}
+                    {isModalOpen && (
+                        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+                            <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col transform transition-all">
+                                <div className="p-5 border-b border-slate-800 flex justify-between items-center bg-slate-800/50">
+                                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                                        {editPresetId ? <Icons.Edit2 className="text-blue-400" size={20} /> : <Icons.Plus className="text-pink-400" size={20} />}
+                                        {editPresetId ? "프리셋 수정" : "새 프리셋 등록"}
+                                    </h3>
+                                    <button onClick={closeModal} className="text-slate-400 hover:text-white transition-colors">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                    </button>
+                                </div>
+                                <div className="p-6 flex flex-col gap-5">
+                                    {/* 1. 곡명 */}
+                                    <div className="flex flex-col gap-1.5">
+                                        <label className="text-sm text-slate-300 font-medium ml-1">곡명 (Title)</label>
+                                        <input 
+                                            type="text" 
+                                            placeholder="예: Lo-fi Urban Night" 
+                                            value={newPresetTitle}
+                                            onChange={(e) => setNewPresetTitle(e.target.value)}
+                                            className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-pink-500 text-slate-200 transition-colors"
+                                            autoFocus
+                                        />
+                                    </div>
+                                    {/* 2. 프롬프트 */}
+                                    <div className="flex flex-col gap-1.5">
+                                        <label className="text-sm text-slate-300 font-medium ml-1">프롬프트 (Prompt)</label>
+                                        <textarea 
+                                            placeholder="원하는 음악 스타일과 지시어를 자유롭게 작성하세요..." 
+                                            value={newPresetPrompt}
+                                            onChange={(e) => setNewPresetPrompt(e.target.value)}
+                                            className="w-full h-32 bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-pink-500 resize-none text-slate-200 custom-scrollbar transition-colors"
+                                        />
+                                    </div>
+                                    {/* 3. 세계관 */}
+                                    <div className="flex flex-col gap-1.5">
+                                        <label className="text-sm text-slate-300 font-medium ml-1">세계관 (Worldview)</label>
+                                        <select
+                                            value={newPresetWorldview}
+                                            onChange={(e) => setNewPresetWorldview(e.target.value)}
+                                            className="w-full bg-slate-950 border border-slate-700 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-pink-500 text-slate-200 transition-colors appearance-none"
+                                            style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%2394a3b8\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundPosition: 'right 1rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.2em 1.2em', paddingRight: '2.5rem' }}
+                                        >
+                                            <option value="Midnight Urban Pop">Midnight Urban Pop</option>
+                                            <option value="Midnight Drive">Midnight Drive</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="p-5 border-t border-slate-800 bg-slate-800/30 flex gap-3 justify-end">
+                                    <button 
+                                        onClick={closeModal}
+                                        className="px-5 py-2.5 rounded-lg text-sm font-medium text-slate-300 hover:bg-slate-700 transition-colors"
+                                    >
+                                        취소
+                                    </button>
+                                    <button 
+                                        onClick={handleSavePreset}
+                                        disabled={!newPresetTitle.trim() || !newPresetPrompt.trim()}
+                                        className={`px-6 py-2.5 disabled:bg-slate-800 disabled:text-slate-600 disabled:cursor-not-allowed text-white rounded-lg text-sm font-bold transition-all shadow-lg ${editPresetId ? 'bg-blue-600 hover:bg-blue-500 shadow-blue-900/20' : 'bg-pink-600 hover:bg-pink-500 shadow-pink-900/20'}`}
+                                    >
+                                        {editPresetId ? "수정하기" : "등록하기"}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+    
+    <!-- 하단 홈 버튼 유지 -->
+    <button onclick="location.href='index.html'"
+        style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+        background:#db2777;color:white;border:none;
+        padding:12px 28px;border-radius:30px;
+        font-size:16px;font-weight:600;
+        box-shadow:0 6px 15px rgba(219,39,119,0.3);
+        z-index:50;cursor:pointer;transition:background 0.3s;">
+        홈으로
+    </button>
+</body>
+</html>

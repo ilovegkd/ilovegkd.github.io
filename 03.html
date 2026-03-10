@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ko" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suno 프롬프트 메이커</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        dark: '#121212',
+                        darker: '#0a0a0a',
+                        card: '#1e1e1e',
+                        primary: '#6366f1', // Indigo 500
+                        primary_hover: '#4f46e5' // Indigo 600
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 커스텀 스크롤바 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e1e1e; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4b5563; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280; 
+        }
+    </style>
+</head>
+<body class="bg-dark text-gray-200 font-sans min-h-screen p-4 md:p-8">
+
+    <div class="max-w-5xl mx-auto">
+        <!-- 헤더 영역 -->
+        <header class="mb-10 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">
+                Suno Prompt Maker
+            </h1>
+            <p class="text-gray-400 text-lg">원하는 분위기 키워드를 입력하면 12개의 다양한 프롬프트를 자동 생성합니다.</p>
+        </header>
+
+        <!-- 입력 영역 -->
+        <div class="bg-card rounded-2xl p-6 shadow-xl border border-gray-800 mb-8">
+            <div class="flex flex-col md:flex-row gap-4">
+                <div class="flex-1">
+                    <label for="moodInput" class="block text-sm font-medium text-gray-400 mb-2">분위기 키워드 (쉼표나 띄어쓰기로 구분)</label>
+                    <input type="text" id="moodInput" placeholder="예: 기분좋은, 편안한, 몽환적인" 
+                        class="w-full bg-darker border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-colors">
+                </div>
+                <div class="flex items-end">
+                    <button id="generateBtn" onclick="generatePrompts()" 
+                        class="w-full md:w-auto bg-primary hover:bg-primary_hover text-white font-semibold py-3 px-8 rounded-lg shadow-lg shadow-indigo-500/30 transition-all transform hover:scale-105 active:scale-95">
+                        프롬프트 생성
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 컨트롤 영역 -->
+        <div class="flex justify-between items-center mb-4 hidden" id="controlArea">
+            <h2 class="text-2xl font-semibold text-gray-100">생성된 결과 (12개)</h2>
+            <button onclick="copyAll()" 
+                class="flex items-center gap-2 bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-md transition-colors text-sm font-medium">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                </svg>
+                전체 복사
+            </button>
+        </div>
+
+        <!-- 결과 출력 그리드 -->
+        <div id="resultsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- 자바스크립트로 생성된 카드들이 여기에 들어갑니다 -->
+        </div>
+    </div>
+
+    <!-- 알림 메시지 (복사 완료 등) -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-indigo-600 text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300">
+        복사되었습니다!
+    </div>
+
+    <script>
+        // ==========================================
+        // 🛠️ 데이터베이스 (이곳에서 키워드를 쉽게 추가/수정하세요)
+        // ==========================================
+        const vocabulary = {
+            // 곡 제목용 형용사
+            adjectives: [
+                "Silver", "Golden", "Quiet", "Soft", "Velvet", "Amber", "Gentle", "Crystal",
+                "Silent", "Radiant", "Azure", "Luminous", "Dreamy", "Calm", "Warm", "Tender"
+            ],
+            
+            // 곡 제목용 일반 명사
+            nouns: [
+                "Horizon", "Bloom", "Breeze", "Meadow", "Echo", "Drift", "Sky", "River",
+                "Garden", "Aurora", "Mist", "Light", "Wave", "Valley", "Harbor", "Oasis"
+            ],
+
+            // 곡 제목용 희귀 단어 (독창성 강화)
+            rareWords: [
+                "Zephyr", "Aurora", "Solstice", "Nimbus", "Lumen", "Reverie", "Aether", "Halo", 
+                "Ember", "Haven", "Driftwood", "Radiance", "Elysium", "Seraph", "Nebula", 
+                "Cascade", "Lumina", "Mirage", "Oasis", "Nova"
+            ],
+            
+            // 장르 및 스타일 (안정적인 chill / ambient 중심)
+            genres: [
+                "acoustic chill instrumental", "ambient instrumental", "lofi chill instrumental",
+                "dreamy ambient instrumental", "soft piano instrumental", "chillout instrumental",
+                "warm ambient instrumental", "relaxing ambient instrumental", "indie ambient instrumental",
+                "soft electronic chill"
+            ],
+            
+            // 악기 구성 (확장됨)
+            instruments: [
+                "acoustic guitar", "electric guitar", "nylon guitar", "rhodes piano", "electric piano",
+                "upright piano", "grand piano", "soft piano", "ambient pad", "warm pad", "synth pad",
+                "analog pad", "deep bass", "fretless bass", "brush drums", "soft percussion", "lofi drums",
+                "finger snaps", "claps", "flute", "violin", "cello", "strings", "glockenspiel",
+                "marimba", "kalimba", "harp", "saxophone"
+            ],
+            
+            // 템포 (BPM 기반)
+            tempos: [
+                "70 BPM", "75 BPM", "80 BPM", "85 BPM", "90 BPM", "95 BPM", "100 BPM", "105 BPM"
+            ],
+            
+            // 분위기를 더해주는 추가 영단어 (다양성 부여용)
+            moodModifiers: [
+                "bright", "uplifting", "relaxing", "warm", "peaceful", "dreamy", "cinematic", 
+                "romantic", "nostalgic", "hopeful", "airy", "soft", "calm", "emotional", 
+                "ethereal", "cozy", "mellow", "vibrant", "gentle"
+            ],
+            
+            // 오디오 품질 및 마무리 믹싱 키워드
+            audioQualities: [
+                "high quality audio", "clean mix", "masterpiece", "studio recording", 
+                "crisp sound", "warm analog sound", "spatial audio", "perfect EQ", "clear production"
+            ]
+        };
+
+        // 한국어 -> 영어 분위기 매핑 사전 (자주 쓰는 단어들)
+        const koreanToEnglishMoodMap = {
+            "기분좋은": "bright, uplifting",
+            "편안한": "relaxing, calm, soothing",
+            "신나는": "energetic, upbeat, lively",
+            "슬픈": "melancholic, sad, emotional",
+            "우울한": "gloomy, dark, moody",
+            "몽환적인": "dreamy, ethereal, surreal",
+            "따뜻한": "warm, cozy, inviting",
+            "평화로운": "peaceful, serene, tranquil",
+            "희망찬": "hopeful, inspiring, optimistic",
+            "감성적인": "emotional, nostalgic, sentimental",
+            "웅장한": "cinematic, epic, grandiose",
+            "로맨틱한": "romantic, sweet, tender",
+            "시원한": "breezy, refreshing, cool",
+            "어두운": "dark, mysterious, deep",
+            "잔잔한": "soft, mellow, gentle",
+            "신비로운": "mysterious, magical, mystical"
+        };
+
+        // ==========================================
+        // ⚙️ 핵심 로직
+        // ==========================================
+
+        let generatedResults = []; // 생성된 12개의 결과 데이터를 담을 배열
+        let usedTitles = new Set(); // 제목 중복 방지용 Set
+
+        // 배열에서 랜덤 요소 뽑기
+        function getRandom(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        // 중복을 최소화하여 곡 제목 생성 (다양한 조합 패턴 사용)
+        function getUniqueTitle() {
+            let title;
+            let attempts = 0;
+            do {
+                const pattern = Math.random();
+                
+                if (pattern < 0.35) {
+                    // 1. 형용사 + 일반 명사 (예: Silver Horizon)
+                    title = `${getRandom(vocabulary.adjectives)} ${getRandom(vocabulary.nouns)}`;
+                } else if (pattern < 0.65) {
+                    // 2. 형용사 + 희귀 단어 (예: Golden Elysium)
+                    title = `${getRandom(vocabulary.adjectives)} ${getRandom(vocabulary.rareWords)}`;
+                } else if (pattern < 0.85) {
+                    // 3. 희귀 단어 + 일반 명사 (예: Zephyr Meadow)
+                    title = `${getRandom(vocabulary.rareWords)} ${getRandom(vocabulary.nouns)}`;
+                } else {
+                    // 4. 희귀 단어 단독 (예: Reverie, Nebula)
+                    title = getRandom(vocabulary.rareWords);
+                }
+                
+                attempts++;
+            } while (usedTitles.has(title) && attempts < 50); // 50번 시도해도 없으면 그냥 씀
+            
+            usedTitles.add(title);
+            return title;
+        }
+
+        // 한국어 입력을 영어 분위기 키워드로 변환
+        function parseUserMood(input) {
+            if (!input.trim()) return "";
+            
+            // 쉼표나 공백으로 분리
+            const words = input.split(/[, ]+/).filter(w => w.length > 0);
+            const translatedMoods = [];
+
+            words.forEach(word => {
+                let translated = false;
+                // 사전에 있는 키워드 포함 여부 확인
+                for (const [ko, en] of Object.entries(koreanToEnglishMoodMap)) {
+                    if (word.includes(ko)) {
+                        translatedMoods.push(en);
+                        translated = true;
+                        break;
+                    }
+                }
+                // 사전에 없으면 입력한 단어 그대로 사용 (영어 입력 대비)
+                if (!translated) {
+                    translatedMoods.push(word);
+                }
+            });
+
+            return translatedMoods.join(", ");
+        }
+
+        // 메인 생성 함수
+        function generatePrompts() {
+            const inputVal = document.getElementById('moodInput').value;
+            const userMoodEnglish = parseUserMood(inputVal);
+            
+            const resultsGrid = document.getElementById('resultsGrid');
+            const controlArea = document.getElementById('controlArea');
+            
+            generatedResults = [];
+            usedTitles.clear(); // 새 생성시 제목 기록 초기화
+            resultsGrid.innerHTML = ''; // 기존 결과 지우기
+
+            for (let i = 0; i < 12; i++) {
+                // 1. 곡명 생성 (랜덤 패턴 / 랜덤 패턴)
+                const title1 = getUniqueTitle();
+                const title2 = getUniqueTitle();
+                const fullTitle = `${title1} / ${title2}`;
+
+                // 2. 프롬프트 요소 무작위 추출
+                const genre = getRandom(vocabulary.genres);
+                
+                // 악기 3개 겹치지 않게 추출
+                let inst1 = getRandom(vocabulary.instruments);
+                let inst2 = getRandom(vocabulary.instruments);
+                while(inst1 === inst2) { 
+                    inst2 = getRandom(vocabulary.instruments); 
+                }
+                let inst3 = getRandom(vocabulary.instruments);
+                while(inst1 === inst3 || inst2 === inst3) { 
+                    inst3 = getRandom(vocabulary.instruments); 
+                }
+                
+                const tempo = getRandom(vocabulary.tempos);
+                
+                let quality1 = getRandom(vocabulary.audioQualities);
+                let quality2 = getRandom(vocabulary.audioQualities);
+                // 음질이 겹치지 않게
+                while(quality1 === quality2) { quality2 = getRandom(vocabulary.audioQualities); }
+
+                const randomMood = getRandom(vocabulary.moodModifiers);
+
+                // 3. 최종 프롬프트 텍스트 조립
+                // 형식: genre or style, instrumentation, tempo, mood description, audio quality
+                let promptParts = [
+                    genre,
+                    `${inst1}, ${inst2}, ${inst3}`,
+                    tempo
+                ];
+
+                if (userMoodEnglish) {
+                    promptParts.push(`${userMoodEnglish}, ${randomMood} mood`);
+                } else {
+                    promptParts.push(`${randomMood} atmosphere`);
+                }
+
+                promptParts.push(`${quality1}, ${quality2}`);
+
+                const fullPrompt = promptParts.join(", ");
+
+                // 데이터 저장
+                generatedResults.push({
+                    id: i + 1,
+                    title: fullTitle,
+                    prompt: fullPrompt
+                });
+
+                // HTML 카드 생성 및 추가
+                const card = document.createElement('div');
+                card.className = "bg-card p-5 rounded-xl border border-gray-700 shadow-lg hover:border-gray-500 transition-colors flex flex-col h-full relative group";
+                
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="text-xs font-bold bg-gray-800 text-gray-400 px-2 py-1 rounded">#${i + 1}</span>
+                        <button onclick="copySingle(${i})" class="text-gray-400 hover:text-white transition-colors" title="이 프롬프트 복사">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2 tracking-wide">${fullTitle}</h3>
+                    <div class="bg-darker p-3 rounded-md text-sm text-gray-300 leading-relaxed flex-grow border border-gray-800 font-mono">
+                        ${fullPrompt}
+                    </div>
+                `;
+                
+                resultsGrid.appendChild(card);
+            }
+
+            // 결과 영역 보이기
+            controlArea.classList.remove('hidden');
+        }
+
+        // ==========================================
+        // 📋 클립보드 복사 기능
+        // ==========================================
+
+        // 텍스트를 클립보드에 복사하는 범용 함수 (iFrame 환경 고려 execCommand 사용)
+        function copyTextToClipboard(text, successMessage) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            
+            // 화면에 보이지 않게 설정
+            textArea.style.position = "fixed";
+            textArea.style.top = "-9999px";
+            textArea.style.left = "-9999px";
+            
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showToast(successMessage);
+                } else {
+                    alert("복사에 실패했습니다.");
+                }
+            } catch (err) {
+                console.error('Fallback: Oops, unable to copy', err);
+            }
+
+            document.body.removeChild(textArea);
+        }
+
+        // 전체 복사 로직
+        function copyAll() {
+            if (generatedResults.length === 0) return;
+
+            let resultText = "";
+            generatedResults.forEach(item => {
+                resultText += `${item.id}. ${item.title}\n${item.prompt}\n\n`;
+            });
+
+            copyTextToClipboard(resultText.trim(), "12개의 프롬프트 전체가 복사되었습니다!");
+        }
+
+        // 단일 카드 복사 로직
+        function copySingle(index) {
+            const item = generatedResults[index];
+            if (!item) return;
+
+            const textToCopy = `${item.title}\n${item.prompt}`;
+            copyTextToClipboard(textToCopy, "클립보드에 복사되었습니다!");
+        }
+
+        // 토스트 알림 메시지 표시
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.innerText = message;
+            
+            // 나타나기 애니메이션
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            
+            // 2.5초 후 사라지기
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2500);
+        }
+
+        // 엔터키 입력 시 자동 생성 지원
+        document.getElementById('moodInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                generatePrompts();
+            }
+        });
+
+        // 처음 로딩 시 예시를 위해 한 번 자동 실행
+        window.onload = () => {
+            // 주석 해제 시 초기 자동 생성 방지
+            // generatePrompts(); 
+        };
+    </script>
+	 <button onclick="location.href='index.html'"
+    class="fixed bottom-6 right-6 md:bottom-8 md:right-8 bg-indigo-600 text-white py-3 px-6 rounded-full font-semibold shadow-lg shadow-black/30 z-[9999] hover:bg-indigo-500 transition-all flex items-center gap-2">
+    <i data-lucide="home" class="w-5 h-5"></i>
+    홈으로
+  </button>
+</body>
+</html>
